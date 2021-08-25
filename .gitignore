@@ -1,0 +1,8 @@
+tmp/
+*.mat
+*.jpg
+*.png
+*.fig
+.DS_Store
+*/.DS_Store
+
