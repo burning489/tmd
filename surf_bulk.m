@@ -1,4 +1,5 @@
 function surf_bulk(x)
+% SURF_BULK Plot bulk energy surface for phase parameter (3*N*N,1) x.
 global N a b c;
 n = N*N;
 x1 = x(1:n);

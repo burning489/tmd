@@ -1,4 +1,9 @@
 function f = derivative(x)
+% DERIVATIVE Approximate partial derivative of energy functional of the phase parameter.
+% x: (n,1) double
+%    Input phase.
+% f: (n,1) double
+%    Partial derivative.
 global N Lx Ly kappa e_0 stiffness a b c;
 n = N*N;
 x1 = x(1:n);

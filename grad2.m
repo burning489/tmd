@@ -1,4 +1,11 @@
 function g2 = grad2(x)
+% GRAD2 Square of length of gradient of x, i.e. partial_x.^2 + partial_y.^2.
+% x: (N,1) double
+%    Input phase.
+% g2: (N,1) double
+%     Output.
+% See Also
+% partial
 global N Lx Ly;
 [px, py] = partial();
 hx = Lx/N;

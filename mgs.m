@@ -1,5 +1,5 @@
 function q = mgs(v)
-% Modified Gram Schmidt Process.
+% MGS Modified Gram Schmidt Process.
 x = v;
 q = v;
 for i = 1:size(q,2)

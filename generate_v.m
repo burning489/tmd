@@ -1,5 +1,21 @@
 function v = generate_v(grad, x, k, options)
-% Generate an orthonormal basis of the k-dimension unstable subspace of x.
+% GENERATE_V Generate an orthonormal basis of the k-dimension unstable subspace of x.
+% Parameters
+% ==============================
+% grad: function handle
+%       Derivative of function.
+% x: (n,1) double
+% k: integer
+%    Index of target saddle point.
+% options: struct
+%          options.gen_gamma: double, default=1e-3
+%                             Stepsize in iteration.
+%          options.l: double, default=1e-6
+%                             Dimer Length.
+%          options.seed: integer or string, default="default"
+%                        Seed of random number generator.
+% See Also
+% dimer, mgs
 if ~exist('options','var')
     options = []; 
 end
@@ -15,8 +31,6 @@ end
 rng(options.seed);
 n = length(x);
 v = randn(n,k);
-vm1 = v+1;
-vm1 = v;
 for i=1:k
     vi = v(:,i);
     v(:,i) = vi - options.gen_gamma*dimer(grad, x, options.l, vi);

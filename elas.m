@@ -1,4 +1,9 @@
 function e_elas = elas(x)
+% ELAS Compute elastic energy of phase x.
+% x: (n,1) double
+%    Input phase.
+% e_elas: double
+%         Output elastic energy.
 global N e_0 stiffness ratio;
 [exx, exy, eyy] = strain(x);
 n = N*N;

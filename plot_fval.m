@@ -1,4 +1,20 @@
 function plot_fval(f_vals, opt_values)
+% PLOT_FVAL Plot energy function values while the algorithm executes.
+% Parameters
+% ==============================
+% f_vals: double
+%         Total energy function value at xn.
+% opt_values: struct
+%             opt_values.n_iter: integer
+%                                Current number of iterations.
+%             opt_values.e_bulk: double
+%                                Bulk energy at xn.
+%             opt_values.e_inter: double
+%                                 Interface energy at xn.
+%             opt_values.e_elas: double
+%                                Elastic energy at xn.
+% See Also
+% optimplotfval
 if opt_values.n_iter == 0
     figure("visible", "off");
     plotfval = plot(0, f_vals, 0, opt_values.e_bulk, 0, opt_values.e_inter, 0, opt_values.e_elas);

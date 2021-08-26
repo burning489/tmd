@@ -87,7 +87,7 @@ options.f_tol = 1e-9;
 options.plot_fcn = @plot_fval;
 
 options.stepsize = [1e-2 1e-3];
-[x, fval, exitflag, output] = model(grad, x0, options);
+[x, fval, exitflag, output] = hiosd(grad, x0, options);
 h = gcf;
 savefig(h, "en.fig");
 saveas(h, "en.jpg");

@@ -1,4 +1,9 @@
 function e_bulk = bulk(x)
+% BULK Compute bulk energy of phase x.
+% x: (n,1) double
+%    Input phase.
+% e_bulk: double
+%         Output bulk energy.
 global N a b c;
 n = N*N;
 x1 = x(1:n);

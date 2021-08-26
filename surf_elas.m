@@ -1,5 +1,7 @@
 function surf_elas(x)
-global N e_0 stiffness ratio;
+% SURF_ELAS Plot elastic energy surface for phase parameter (3*N*N,1) x.
+% With elastic energy ratio=1.
+global N e_0 stiffness;
 [exx, exy, eyy] = strain(x);
 n = N*N;
 x1 = x(1:n);

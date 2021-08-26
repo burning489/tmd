@@ -1,4 +1,9 @@
 function e_inter = inter(x)
+% INTER Compute interface energy of phase x.
+% x: (n,1) double
+%    Input phase.
+% e_inter: double
+%          Output interface energy.
 global N kappa;
 n = N*N;
 x1 = x(1:n);

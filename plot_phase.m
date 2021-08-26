@@ -1,4 +1,5 @@
 function plot_phase(x)
+% PLOT_PHASE Plot phase graph for (3*N*N,1) x.
 	global N;
 	n = N*N;
 	figure;

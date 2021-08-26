@@ -1,4 +1,9 @@
-function del = lap()
+function del = laplacian()
+% LAPLACIAN Laplacian operator at x via central difference.(TODO: divide gird length)
+% x: (N,1) double
+%    Input phase.
+% del: (N^2,1) double
+%      Output.
 global N Lx Ly;
 I = speye(N,N);
 E = sparse(2:N,1:N-1,1,N,N);

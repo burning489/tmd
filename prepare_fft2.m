@@ -1,5 +1,5 @@
-% compute (normalized) wave numbers and relevant variables
 function [kx, ky]= prepare_fft2(Lx, Ly, N)
+% PREPARE_FFT2 Compute (normalized) wave numbers and relevant variables
 k_x = [0:N/2 -N/2+1:-1]*(2*pi/Lx);
 k_y = [0:N/2 -N/2+1:-1]*(2*pi/Ly);
 

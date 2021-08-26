@@ -1,4 +1,9 @@
 function test_energy(x, v)
+% TEST_ENERGY Plot energy surface around x in directions from v.
+% x: (n,1) double
+%    Input phase.
+% v: (n,1) or (n,2) double
+%    Unstable subspace at x.
 figure;
 L = 0.5;
 t = -L:1e-2:L;
