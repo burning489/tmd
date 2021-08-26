@@ -12,11 +12,11 @@ end
 % if exist('pngs','dir')
 %     system('rm -rf ./pngs');
 % end
-% 
+%
 % if exist('mats','dir')
 %     system('rm -rf ./mats');
 % end
-% 
+%
 % if exist('gifs','dir')
 %     system('rm -rf ./gifs');
 % end
@@ -25,7 +25,7 @@ end
 % mkdir mats
 % mkdir gifs
 
-%% setup 
+%% setup
 diary log.txt
 
 setup;
@@ -71,27 +71,49 @@ phase6(n+1:2*n) = phase6_2(:);
 % x0 = load("phase6.mat").phase6;
 x0 = zeros(3*n, 1);
 
-%% generate unstable subspace v
-k = 1;
-v0 = generate_v(grad, x0, k, options);
-x0 = x0 + 1e-1*v0;
-
 %% specify solver parameter
+grad = @derivative;
+% HiOSD params
+k = 1;
+options.energy = @energy;
+options.scheme = 1;
+options.dimer = 1e-9;
 options.k = k;
-options.v0 = v0;
 options.x_tol = 1e-9;
 options.f_tol = 1e-9;
 options.plot_fcn = @plot_fval;
 options.stepsize = [1e-2 1e-2];
-ratio = [1,0];
+options.gen_gamma = options.stepsize(2);
 
-%% HiOSD
-[x, fval, exitflag, output] = hiosd(grad, x0, options);
+%% generate unstable subspace v
+v0 = generate_v(grad, x0, k, options);
+x0 = x0 + 1e-1*v0;
+options.v0 = v0;
 
-%% postprocess
-h = gcf;
-savefig(h, "en.fig");
-saveas(h, "en.jpg");
-% save("main.mat");
+%% ratios
+r1 = [0.5 1 2];
+r2 = [1 1e1 1e2 1e3 1e4];
+attempts = 0;
+for i = 1:length(r1)
+    for j = 1:length(r2)
+        attempts = attempts + 1;
+        ratio = [ri(i) r2(j)];
+        fprintf("ratio = [%f,%f]\n", ratio);
+        %% HiOSD
+        [x, fval, exitflag, output] = hiosd(grad, x0, options);
+        
+        %% postprocess
+        output.message
+        if exitflag
+            h = gcf;
+            saveas(h, sprintf("en%d.jpg", attempts));
+            save(sprintf("main%d.mat", attempts));
+            close all;
+            plot_phase(x);
+            saveas(gcf, sprintf("x%d.jpg", attempts));
+            close all;
+        end
+    end
+end
 
 diary off
