@@ -4,8 +4,7 @@ function e_chem = chem(x)
 %    Input phase.
 % e_chem: double
 %         Output chemical energy.
-% See Also
-% bulk, inter
+% See also bulk, inter
 e_bulk = bulk(x);
 e_inter = inter(x);
 e_chem = e_bulk + e_inter;

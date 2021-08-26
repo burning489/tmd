@@ -14,8 +14,7 @@ function v = generate_v(grad, x, k, options)
 %                             Dimer Length.
 %          options.seed: integer or string, default="default"
 %                        Seed of random number generator.
-% See Also
-% dimer, mgs
+% See also dimer, mgs
 if ~exist('options','var')
     options = []; 
 end

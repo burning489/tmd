@@ -4,7 +4,6 @@ function e_tot = energy(x)
 %    Input phase.
 % e_tot: double
 %        Output total energy.
-% See Also
-% chem, elas
+% See also chem, elas
 e_tot = chem(x) + elas(x);
 end

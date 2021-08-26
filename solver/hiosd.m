@@ -58,8 +58,7 @@ function [x, fval, exitflag, output] = hiosd(grad, x0, options, varargin)
 %                         Exit message.
 %         output.v: (n,k) double
 %                   Unstable space of x if algorithm converges.
-% See Also 
-% dimer, generate_v, mgs, plot_fval, myoutput
+% See also dimer, generate_v, mgs, plot_fval, myoutput
 
 %% prepare parameters
 if ~exist('options','var')

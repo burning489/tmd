@@ -13,10 +13,9 @@ function plot_fval(f_vals, opt_values)
 %                                 Interface energy at xn.
 %             opt_values.e_elas: double
 %                                Elastic energy at xn.
-% See Also
-% optimplotfval
+% See also optimplotfval
 if opt_values.n_iter == 0
-    figure("visible", "off");
+%     figure("visible", "off");
     plotfval = plot(0, f_vals, 0, opt_values.e_bulk, 0, opt_values.e_inter, 0, opt_values.e_elas);
     legend({'total','bulk','interface','elas'}, "Location", "northwest");
     set(plotfval(1), 'Tag', 'fval');

@@ -4,8 +4,7 @@ function g2 = grad2(x)
 %    Input phase.
 % g2: (N,1) double
 %     Output.
-% See Also
-% partial
+% See also partial
 global N Lx Ly;
 [px, py] = partial();
 hx = Lx/N;
