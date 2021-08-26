@@ -1,5 +1,6 @@
 function surf_inter(x)
 % SURF_INTER Plot interface energy surface for phase parameter (3*N*N,1) x.
+% With interface energy ratio=1.
 global N kappa;
 n = N*N;
 x1 = x(1:n);

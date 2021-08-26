@@ -17,5 +17,5 @@ f = f + 1/2*(stiffness(1)*(e_0(1,1,3)^2 + e_0(2,2,3)^2) + 4*stiffness(2)*e_0(1,2
 f = f - (stiffness(1)*(exx*e_0(1,1,1)+eyy*e_0(2,2,1)) + 4*stiffness(2)*exy*e_0(1,2,1) + stiffness(3)*(exx*e_0(2,2,1)+eyy*e_0(1,1,1))).*x1.^2;
 f = f - (stiffness(1)*(exx*e_0(1,1,2)+eyy*e_0(2,2,2)) + 4*stiffness(2)*exy*e_0(1,2,2) + stiffness(3)*(exx*e_0(2,2,2)+eyy*e_0(1,1,2))).*x2.^2;
 f = f - (stiffness(1)*(exx*e_0(1,1,3)+eyy*e_0(2,2,3)) + 4*stiffness(2)*exy*e_0(1,2,3) + stiffness(3)*(exx*e_0(2,2,3)+eyy*e_0(1,1,3))).*x3.^2;
-e_elas = sum(sum(f))/N/N*ratio;
+e_elas = sum(sum(f))/N/N*ratio(2);
 end

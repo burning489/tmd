@@ -125,7 +125,7 @@ vn = options.v0;
 e_bulk = bulk(xn);
 e_inter = inter(xn);
 global ratio
-if ratio == 0
+if ratio(2) == 0
     e_elas = 0;
 else
     e_elas = elas(xn);
@@ -182,7 +182,7 @@ while n_iter < options.max_iter
     %     en = options.energy(xn);
     e_bulk = bulk(xn);
     e_inter = inter(xn);
-    if ratio == 0
+    if ratio(2) == 0
         e_elas = 0;
     else
         e_elas = elas(xn);

@@ -10,7 +10,7 @@ function v = generate_v(grad, x, k, options)
 % options: struct
 %          options.gen_gamma: double, default=1e-3
 %                             Stepsize in iteration.
-%          options.l: double, default=1e-6
+%          options.l: double, default=1e-9
 %                             Dimer Length.
 %          options.seed: integer or string, default="default"
 %                        Seed of random number generator.
@@ -22,7 +22,7 @@ if ~isfield(options,'gen_gamma')
     options.gen_gamma = 1e-3;  
 end
 if ~isfield(options,'l')
-    options.l = 1e-6;  
+    options.l = 1e-9;  
 end
 if ~isfield(options,'seed')
     options.seed = 'default';  

@@ -19,7 +19,7 @@ THETA = [0, 2*pi/3, -2*pi/3];
 a = 0.0031;
 b = 0.002;
 c = 0.00125;
-ratio = 1;
+ratio = [1, 1];
 n = N^2;
 
 %% Kronecker Delta function
