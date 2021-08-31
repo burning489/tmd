@@ -5,7 +5,7 @@ addpath(genpath("."));
 global N max_iter a b c kappa Lx Ly stiffness theta s_0 e_0 kx ky EPS options cnt ratio;
 cnt = 1;
 max_iter = 1e6;
-kappa = 0.006;
+kappa = 0.001;
 syms theta;
 EPS = 1e-10;
 N = 64;

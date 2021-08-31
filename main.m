@@ -36,10 +36,10 @@ options.energy = @energy;
 options.scheme = 1;
 options.dimer = 1e-9;
 options.k = k;
-options.x_tol = 1e-12;
-options.f_tol = 1e-12;
+options.x_tol = 1e-9;
+options.f_tol = 1e-9;
 options.plot_fcn = @plot_fval;
-% options.stepsize = [1e-2 1e-2];
+% options.stepsize = [1e-4 1e-4];
 options.gen_gamma = options.stepsize(2);
 
 %% generate unstable subspace v
@@ -48,6 +48,7 @@ x0 = x0 + 1e-1*v0(:,1);
 options.v0 = v0(:,1:end);
 
 ratio = [1, 0];
+x0(n+1:end)=0;
 [x, fval, exitflag, output] = hiosd(grad, x0, options);
 
 %% postprocess
