@@ -188,11 +188,11 @@ while n_iter < options.max_iter
         e_elas = elas(xn);
     end
     en = e_bulk + e_inter + e_elas;
-    if en < enm1
-        output.message = sprintf("Function value decreases.\n");
-        exitflag = 0;
-        break;
-    end
+%     if en < enm1
+%         output.message = sprintf("Function value decreases.\n");
+%         exitflag = 0;
+%         break;
+%     end
     if en > 1e3
         output.message = sprintf("Function value exceeds 1e3.\n");
         exitflag = 0;

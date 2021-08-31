@@ -21,8 +21,8 @@ end
 if ~isfield(options,'gen_gamma')
     options.gen_gamma = 1e-3;  
 end
-if ~isfield(options,'l')
-    options.l = 1e-9;  
+if ~isfield(options,'dimer')
+    options.dimer = 1e-9;  
 end
 if ~isfield(options,'seed')
     options.seed = 'default';  
@@ -32,7 +32,7 @@ n = length(x);
 v = randn(n,k);
 for i=1:k
     vi = v(:,i);
-    v(:,i) = vi - options.gen_gamma*dimer(grad, x, options.l, vi);
+    v(:,i) = vi - options.gen_gamma*dimer(grad, x, options.dimer, vi);
 end
 v = mgs(v);
 end

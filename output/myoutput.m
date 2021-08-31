@@ -1,13 +1,63 @@
 function stop = myoutput(x, optimValues, state)
-    stop = false;
-    switch state
+global N;
+n = N*N;
+stop = false;
+switch state
     case 'init'
-          % Setup for plots or dialog boxes
+        figure(2);
+        imagesc(reshape(x,N,N));
+        colorbar;
+        axis square;
+        %         subplot(1,3,1);
+        %         imagesc(reshape(x(1:n),N,N));
+        %         colorbar;
+        %         axis square;
+        %         subplot(1,3,2);
+        %         imagesc(reshape(x(n+1:2*n),N,N));
+        %         colorbar;
+        %         axis square;
+        %         subplot(1,3,3);
+        %         imagesc(reshape(x(2*n+1:3*n),N,N));
+        %         colorbar;
+        %         axis square;
     case 'iter'
-          % Make updates to plots or dialog boxes as needed
+        if mod(optimValues.n_iter, 1e2)==0
+            figure(2);
+            imagesc(reshape(x,N,N));
+            colorbar;
+            axis square;
+            %             subplot(1,3,1);
+            %             imagesc(reshape(x(1:n),N,N));
+            %             colorbar;
+            %             axis square;
+            %             subplot(1,3,2);
+            %             imagesc(reshape(x(n+1:2*n),N,N));
+            %             colorbar;
+            %             axis square;
+            %             subplot(1,3,3);
+            %             imagesc(reshape(x(2*n+1:3*n),N,N));
+            %             colorbar;
+            %             axis square;
+            title(sprintf("#iter = %d",optimValues.n_iter));
+        end
     case 'done'
-          % Cleanup of plots, dialog boxes, or final plot
-    end
+        figure(2);
+        imagesc(reshape(x,N,N));
+        colorbar;
+        axis square;
+        %         subplot(1,3,1);
+        %         imagesc(reshape(x(1:n),N,N));
+        %         colorbar;
+        %         axis square;
+        %         subplot(1,3,2);
+        %         imagesc(reshape(x(n+1:2*n),N,N));
+        %         colorbar;
+        %         axis square;
+        %         subplot(1,3,3);
+        %         imagesc(reshape(x(2*n+1:3*n),N,N));
+        %         colorbar;
+        %         axis square;
+end
 end
 % function output(xs, ~, f_norms, ~, n_iter)
 % global N options cnt;
@@ -99,24 +149,24 @@ end
 %     axis square;
 %     colorbar;
 %     title(ax3, 'phase 1')
-    
+
 %     ax4 = subplot(3,3,8);
 %     imagesc(reshape(xs_sample(i, n+1:2*n), N, N));
 %     axis square;
 %     colorbar;
 %     title(ax4, 'phase 2')
-    
+
 %     ax5 = subplot(3,3,9);
 %     imagesc(reshape(xs_sample(i, 2*n+1:3*n), N, N));
 %     axis square;
 %     colorbar;
 %     title(ax5, 'phase 3')
 %     drawnow
-    
+
 %     frame = getframe(h);
 %     im = frame2im(frame);
 %     [imind,cm] = rgb2ind(im,256);
-    
+
 %     if i == 1
 %         imwrite(imind,cm,gif_name,'gif', 'Loopcount',inf, 'DelayTime',0.1);
 %     else

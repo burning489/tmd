@@ -16,6 +16,7 @@ function plot_fval(f_vals, opt_values)
 % See also optimplotfval
 if opt_values.n_iter == 0
 %     figure("visible", "off");
+    figure(1);
     plotfval = plot(0, f_vals, 0, opt_values.e_bulk, 0, opt_values.e_inter, 0, opt_values.e_elas);
     legend({'total','bulk','interface','elas'}, "Location", "northwest");
     set(plotfval(1), 'Tag', 'fval');
@@ -25,6 +26,7 @@ if opt_values.n_iter == 0
     title(sprintf("function values during %d iterations", opt_values.n_iter));
     drawnow
 else
+    figure(1);
     plotfval = findobj(get(gcf,'Children'), 'Tag', 'fval');
     f_vals = [plotfval.YData, f_vals];
     set(plotfval, 'YData', f_vals);
