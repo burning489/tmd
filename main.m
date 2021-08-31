@@ -9,22 +9,6 @@ if exist('mgs.txt', 'file')
     delete('./mgs.txt');
 end
 
-% if exist('pngs','dir')
-%     system('rm -rf ./pngs');
-% end
-%
-% if exist('mats','dir')
-%     system('rm -rf ./mats');
-% end
-%
-% if exist('gifs','dir')
-%     system('rm -rf ./gifs');
-% end
-
-% mkdir pngs
-% mkdir mats
-% mkdir gifs
-
 %% setup
 diary log.txt
 
@@ -34,33 +18,6 @@ global N options;
 
 rng('default');
 
-% phase1 = zeros(3*n, 1);
-% phase1(1:n/2) = 1;
-% phase1(n/2+11:n) = -1;
-% 
-% phase2 = zeros(3*n, 1);
-% phase2(n+1:2*n) = 1;
-% 
-% phase3 = zeros(3*n, 1);
-% phase3(2*n+1:3*n) = 1;
-% 
-% phase4 = zeros(3*n, 1);
-% 
-% phase5 = zeros(3*n, 1);
-% phase5_1 = ones(N, N);
-% phase5_1(1:N/2, 1:N/2) = -1;
-% phase5_1(N/2+1:end, N/2+1:end) = -1;
-% phase5(1:n) = phase5_1(:);
-% 
-% phase6 = zeros(3*n, 1);
-% phase6_1 = ones(N, N);
-% phase6_1(1:N*N/2) = -1;
-% phase6_2 = ones(N, N);
-% phase6_2(1:N*N/2) = -1;
-% phase6_2 = phase6_2';
-% phase6(1:n) = phase6_1(:);
-% phase6(n+1:2*n) = phase6_2(:);
-
 %% initial minimization
 % fun = @energy;
 % options.plot_fcn = @plot_fval;
@@ -68,11 +25,8 @@ rng('default');
 % output.iterations
 % output.message
 
-% x0 = load("phase6.mat").phase6;
-% x0 = zeros(3*n, 1);
-% x0(1:2*n) = 1;
-
-x0 = ones(n, 1);
+x0 = zeros(3*n, 1);
+% x0(1:n) = 1;
 
 %% specify solver parameter
 grad = @derivative;
