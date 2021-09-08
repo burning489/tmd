@@ -6,6 +6,6 @@ function e_tot = energy(x)
 %        Output total energy.
 % See also chem, elas
 
-% e_tot = chem(x) + elas(x);
-e_tot = chem(x);
+e_tot = chem(x) + elas(x);
+% e_tot = chem(x);
 end

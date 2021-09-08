@@ -14,9 +14,9 @@ function plot_fval(f_vals, opt_values)
 %             opt_values.e_elas: double
 %                                Elastic energy at xn.
 % See also optimplotfval
+global root_path;
 if opt_values.n_iter == 0
-%     figure("visible", "off");
-    figure(1);
+    set(0, 'CurrentFigure', 1);
     plotfval = plot(0, f_vals, 0, opt_values.e_bulk, 0, opt_values.e_inter, 0, opt_values.e_elas);
     legend({'total','bulk','interface','elas'}, "Location", "northwest");
     set(plotfval(1), 'Tag', 'fval');
@@ -26,7 +26,7 @@ if opt_values.n_iter == 0
     title(sprintf("function values during %d iterations", opt_values.n_iter));
     drawnow
 else
-    figure(1);
+    set(0, 'CurrentFigure', 1);
     plotfval = findobj(get(gcf,'Children'), 'Tag', 'fval');
     f_vals = [plotfval.YData, f_vals];
     set(plotfval, 'YData', f_vals);
@@ -48,9 +48,10 @@ else
     set(plotelas, 'XData', 0:opt_values.n_iter);
     
     title(sprintf("function values during %d iterations", opt_values.n_iter));
-    %         if opt_values.n_iter<10
-    %             set(gca, 'XTick', 1:opt_values.n_iter+1);
-    %         end
     drawnow
+end
+if mod(opt_values.n_iter, 1000) == 0
+    i = get_run_index();
+    saveas(1, sprintf(root_path+"/results/run%03d/energy.png", i));
 end
 end

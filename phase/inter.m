@@ -12,6 +12,5 @@ x1 = x(1:n);
 x2 = x(n+1:2*n);
 x3 = x(2*n+1:end);
 f_inter =  kappa/2*(grad2(x1)+grad2(x2)+grad2(x3));
-% f_inter(n+1:end) = 0;
 e_inter = sum(sum(f_inter))/N/N*ratio(1);
 end

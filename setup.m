@@ -2,26 +2,25 @@
 addpath(genpath("."));
 
 %% global variables
-global N max_iter a b c kappa Lx Ly stiffness theta s_0 e_0 kx ky EPS options cnt ratio;
-cnt = 1;
-max_iter = 1e6;
-kappa = 0.001;
+global N max_iter a b c kappa Lx Ly stiffness theta s_0 e_0 kx ky EPS ratio root_path;
+max_iter = 5e6;
+kappa = 0.01;
 syms theta;
 EPS = 1e-10;
 N = 64;
 Lx = 1;
-Ly = sqrt(3);
+% Ly = sqrt(3);
+Ly = 1;
 MU = 50;
 NU = 0.24;
 E_XX_0 = -0.0299;
 E_YY_0 = 0.0374;
 THETA = [0, 2*pi/3, -2*pi/3];
-% a = 0.0031;
-% b = 0.002;
-% c = 0.00125;
-a = 4; b=10; c=6;
+% a = 3; b=2; c=1;
+a = 2.4; b=8.4; c=6;
 ratio = [1, 1];
 n = N^2;
+root_path = pwd;
 
 %% Kronecker Delta function
 k_delta = @(x, y) double(x==y);
@@ -52,16 +51,27 @@ end
 
 %% global options
 grad = @derivative;
+k = 1;
+options.k = k;
+options.perturb_eps = 1e-1;
 % generate_v params
-options.seed = 'default';
-options.max_iter = max_iter;
-options.gen_gamma = 1e-3;
-% HiOSD params
-options.call_back = @output;
-options.tol = 1e-3*N*N;
-options.l_eps = 1e-10;
-options.scheme = 1;
 options.stepsize = [1e-3 1e-3];
-options.energy = @energy;
-options.dimer = 1e-9;
+options.l = 1e-6;
+options.seed = 'default';
+% HiOSD params
+options.max_iter = max_iter;
+options.scheme = 1;
+options.x_tol = 1e-9;
+options.f_tol = 1e-9;
+options.g_tol = 1e-2;
 options.output_fcn = @myoutput;
+options.plot_fcn = @plot_fval;
+options.energy = @energy;
+options.display = "notify";
+
+%% output settings
+figure("Visible", "off");
+figure("Visible", "off");
+% figure();
+% figure();
+gen_folder();

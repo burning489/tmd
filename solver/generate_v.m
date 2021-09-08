@@ -8,9 +8,9 @@ function v = generate_v(grad, x, k, options)
 % k: integer
 %    Index of target saddle point.
 % options: struct
-%          options.gen_gamma: double, default=1e-3
-%                             Stepsize in iteration.
-%          options.l: double, default=1e-9
+%          options.stepsize: 1*2 double, default = [1e-3 1e-3]
+%                            Stepsize in iterations of x and v respectively.
+%          options.l: double, default=1e-6
 %                             Dimer Length.
 %          options.seed: integer or string, default="default"
 %                        Seed of random number generator.
@@ -18,21 +18,27 @@ function v = generate_v(grad, x, k, options)
 if ~exist('options','var')
     options = []; 
 end
-if ~isfield(options,'gen_gamma')
-    options.gen_gamma = 1e-3;  
+if ~isfield(options,'stepsize')
+    stepsize = [1e-3 1e-3];  
+else
+    stepsize = options.stepsize;
 end
-if ~isfield(options,'dimer')
-    options.dimer = 1e-9;  
+if ~isfield(options,'l')
+    l = 1e-6;  
+else 
+    l = options.l;
 end
 if ~isfield(options,'seed')
-    options.seed = 'default';  
+    seed = 'default';  
+else
+    seed = options.seed;
 end
-rng(options.seed);
+rng(seed);
 n = length(x);
 v = randn(n,k);
 for i=1:k
     vi = v(:,i);
-    v(:,i) = vi - options.gen_gamma*dimer(grad, x, options.dimer, vi);
+    v(:,i) = vi - stepsize(2)*dimer(grad, x, l, vi);
 end
 v = mgs(v);
 end
