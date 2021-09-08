@@ -21,7 +21,13 @@ v0 = generate_v(grad, x0, k, options);
 x0 = x0 + options.perturb_eps*v0(:,1);
 v0 = v0(:,1:k);
 
-ratio = [1, 0];
+%% output settings
+gen_folder();
+figure("Visible", "off");
+figure("Visible", "off");
+% figure();
+% figure();
+
 [x, fval, exitflag, output] = hiosd(grad, x0, k, v0, options);
 create_gif(get_run_index());
 

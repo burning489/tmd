@@ -1,6 +1,10 @@
 %% path management 
 addpath(genpath("."));
 
+if ~exist("results", 'dir')
+    mkdir("results/")
+end
+
 %% global variables
 global N max_iter a b c kappa Lx Ly stiffness theta s_0 e_0 kx ky EPS ratio root_path;
 max_iter = 5e6;
@@ -18,7 +22,7 @@ E_YY_0 = 0.0374;
 THETA = [0, 2*pi/3, -2*pi/3];
 % a = 3; b=2; c=1;
 a = 2.4; b=8.4; c=6;
-ratio = [1, 1];
+ratio = [1, 0];
 n = N^2;
 root_path = pwd;
 
@@ -69,9 +73,3 @@ options.plot_fcn = @plot_fval;
 options.energy = @energy;
 options.display = "notify";
 
-%% output settings
-figure("Visible", "off");
-figure("Visible", "off");
-% figure();
-% figure();
-gen_folder();
