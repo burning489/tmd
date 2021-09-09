@@ -40,5 +40,6 @@ for i=1:k
     vi = v(:,i);
     v(:,i) = vi - stepsize(2)*dimer(grad, x, l, vi);
 end
-v = mgs(v);
+% v = mgs(v);
+[v, ~] = qr(v, 0);
 end

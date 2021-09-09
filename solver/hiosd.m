@@ -121,15 +121,11 @@ else
     l = options.l;
 end
 if ~isfield(options,'energy')
-    if exist("energy", "file")
-        energy = @energy;
-    else
-        errID = "HiOSD:UnknownEnergyFunction";
-        msgtext = "HiOSD does not find energy function";
-        ME = MException(errID,msgtext);
-        x = [], fval=[], exitflag=[], output=[];
-        throw(ME);
-    end
+    errID = "HiOSD:UnknownEnergyFunction";
+    msgtext = "HiOSD does not find energy function";
+    ME = MException(errID,msgtext);
+%     x = [], fval=[], exitflag=[], output=[];
+    throw(ME);
 else
     energy = options.energy;
 end
@@ -181,20 +177,15 @@ while n_iter < max_iter
             vnp1(:,i) = vni - stepsize(2)*uni;
         end
     end
-    vnp1 = mgs(vnp1);
+    %     vnp1 = mgs(vnp1);
+    [vnp1, ~] = qr(vnp1, 0);
+%     test_orth(vnp1)
     
-    xnm1 = xn;
     xn = xnp1;
     vn = vnp1;
     n_iter = n_iter + 1;
     fn = -grad(xn);
     
-    % if norm(xn-xnm1) < x_tol*(1+norm(xnm1))
-    %     output.message = sprintf("Meet Step Tolerance.\n");
-    %     exitflag = 1;
-    %     break;
-    % end
-    enm1 = en;
     %     en = energy(xn);
     e_bulk = bulk(xn);
     e_inter = inter(xn);
@@ -204,23 +195,12 @@ while n_iter < max_iter
         e_elas = elas(xn);
     end
     en = e_bulk + e_inter + e_elas;
-%     if en < enm1
-%         output.message = sprintf("Function value decreases.\n");
-%         exitflag = 0;
-%         break;
-%     end
 
-    if en > 1e3
-        output.message = sprintf("Function value exceeds 1e3.\n");
+    if en > 1e4
+        output.message = sprintf("Function value exceeds 1e4.\n");
         exitflag = 0;
         break;
     end
-    
-    % if abs(en-enm1) < f_tol*(1+enm1)
-    %     output.message = sprintf("Meet Energy Function Tolerance.\n");
-    %     exitflag = 1;
-    %     break;
-    % end
     
     if ~isempty(plot_fcn)
         opt_values.n_iter = n_iter;
@@ -232,6 +212,8 @@ while n_iter < max_iter
     if ~isempty(output_fcn)
         opt_values.n_iter = n_iter;
         opt_values.fval = en;
+        opt_values.x = xn;
+        opt_values.v = vn;
         if n_iter == 1
             state = "init";
         elseif n_iter < max_iter

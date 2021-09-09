@@ -1,37 +1,25 @@
 clear, close all
 
-%% preprocess working directory
-if exist('log.txt', 'file')
-    delete('./log.txt');
-end
-
 %% setup
-diary log.txt
 setup;
+global runid;
+runid = 1;
+run_folder = sprintf(pwd+"/results/run%03d", runid);
+if exist(run_folder, "dir")
+    system("rm -rf "+run_folder);
+end
+mkdir(sprintf(pwd+"/results/run%03d/plot", runid));
+mkdir(sprintf(pwd+"/results/run%03d/data", runid));
 
-%% initial 
-x0 = zeros(3*n, 1);
+diary(run_folder+"/log.txt");
 
-%% specify solver parameter
-% options.stepsize = [1e-2 1e-2];
+%% save params
 save_options(options);
 
-%% generate unstable subspace v
-v0 = generate_v(grad, x0, k, options);
-x0 = x0 + options.perturb_eps*v0(:,1);
-v0 = v0(:,1:k);
-
-%% output settings
-gen_folder();
-figure("Visible", "off");
-figure("Visible", "off");
-% figure();
-% figure();
-
 [x, fval, exitflag, output] = hiosd(grad, x0, k, v0, options);
-create_gif(get_run_index());
+save(sprintf(root_path+"/results/run%03d/results.mat", runid));
 
 %% postprocess
 output.message
 
-diary off
+diary off;
