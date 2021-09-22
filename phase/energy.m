@@ -6,6 +6,13 @@ function e_tot = energy(x)
 %        Output total energy.
 % See also chem, elas
 
-e_tot = chem(x) + elas(x);
-% e_tot = chem(x);
+global ratio e_bulk e_inter e_elas
+e_bulk = bulk(x);
+e_inter = inter(x);
+if ratio(2) == 0
+	e_elas = 0;
+else
+    e_elas = elas(x);
+end
+e_tot = e_bulk + e_inter + e_elas;
 end

@@ -14,10 +14,10 @@ function plot_fval(f_vals, opt_values)
 %             opt_values.e_elas: double
 %                                Elastic energy at xn.
 % See also optimplotfval
-global root_path runid;
+global root_path runid e_bulk e_inter e_elas
 if opt_values.n_iter == 0
     set(0, 'CurrentFigure', 1);
-    plotfval = plot(0, f_vals, 0, opt_values.e_bulk, 0, opt_values.e_inter, 0, opt_values.e_elas);
+    plotfval = plot(0, f_vals, 0, e_bulk, 0, e_inter, 0, e_elas);
     legend({'total','bulk','interface','elas'}, "Location", "northwest");
     set(plotfval(1), 'Tag', 'fval');
     set(plotfval(2), 'Tag', 'e_bulk');
@@ -33,17 +33,17 @@ else
     set(plotfval, 'XData', 0:opt_values.n_iter);
     
     plotbulk = findobj(get(gcf,'Children'), 'Tag', 'e_bulk');
-    bulk_vals = [plotbulk.YData, opt_values.e_bulk];
+    bulk_vals = [plotbulk.YData, e_bulk];
     set(plotbulk, 'YData', bulk_vals);
     set(plotbulk, 'XData', 0:opt_values.n_iter);
     
     plotinter = findobj(get(gcf,'Children'), 'Tag', 'e_inter');
-    inter_vals = [plotinter.YData, opt_values.e_inter];
+    inter_vals = [plotinter.YData, e_inter];
     set(plotinter, 'YData', inter_vals);
     set(plotinter, 'XData', 0:opt_values.n_iter);
     
     plotelas = findobj(get(gcf,'Children'), 'Tag', 'e_elas');
-    elas_vals = [plotelas.YData, opt_values.e_elas];
+    elas_vals = [plotelas.YData, e_elas];
     set(plotelas, 'YData', elas_vals);
     set(plotelas, 'XData', 0:opt_values.n_iter);
     

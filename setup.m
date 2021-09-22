@@ -8,12 +8,11 @@ end
 %% global variables
 global N max_iter a b c kappa Lx Ly stiffness theta s_0 e_0 kx ky EPS ratio root_path;
 max_iter = 2e6;
-kappa = 0.01;
+kappa = 0.005;
 syms theta;
 EPS = 1e-10;
 N = 64;
 Lx = 1;
-% Ly = sqrt(3);
 Ly = 1;
 MU = 50;
 NU = 0.24;
@@ -21,7 +20,7 @@ E_XX_0 = -0.0299;
 E_YY_0 = 0.0374;
 THETA = [0, 2*pi/3, -2*pi/3];
 a = 2.4; b=8.4; c=6;
-ratio = [1, 0];
+ratio = [1, 1];
 n = N^2;
 root_path = pwd;
 
@@ -51,35 +50,3 @@ end
 
 %% prepare wave vectors
 [kx, ky] = prepare_fft2(Lx, Ly, N);
-
-%% global options
-grad = @derivative;
-k = 3;
-options.k0 = 0;
-options.k = k;
-options.perturb_eps = 1e-1;
-options.perturb_index = [1];
-% generate_v params
-options.stepsize = [1e-3 1e-3];
-options.l = 1e-6;
-options.seed = 'default';
-% HiOSD params
-options.max_iter = max_iter;
-options.scheme = 1;
-options.x_tol = 1e-9;
-options.f_tol = 1e-9;
-options.g_tol = 1e-2;
-options.output_fcn = @myoutput;
-options.plot_fcn = @plot_fval;
-options.energy = @energy;
-options.display = "iter";
-
-figure("Visible", "off");
-figure("Visible", "off");
-% figure();
-% figure();
-
-%% initial x and v0
-x0 = zeros(3*n, 1);
-v0 = generate_v(grad, x0, k, options);
-x0 = x0 + options.perturb_eps*v0(:,1);

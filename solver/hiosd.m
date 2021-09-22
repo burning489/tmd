@@ -15,10 +15,6 @@ function [x, fval, exitflag, output] = hiosd(grad, x0, k, v0, options, varargin)
 %                            Maximum number of iterations allowed, a positive integer.
 %          options.stepsize: 1*2 double, default = [1e-3 1e-3]
 %                            Stepsize in iterations of x and v respectively.
-%          options.x_tol: double, default = 1e-4
-%                         Termination tolerance on x, a positive scalar. Solver stops when it satisfies x_tol.
-%          options.f_tol: double, default = 1e-4
-%                         Termination tolerance on function values, a positive scalar. Solver stops when it satisfies y_tol.
 %          options.g_tol: double, default = 1e-6
 %                         Termination tolerance on derivative, a positive scalar. Solver stops when it satisfies g_tol.
 %          options.display: string, default = "notify"
@@ -32,14 +28,28 @@ function [x, fval, exitflag, output] = hiosd(grad, x0, k, v0, options, varargin)
 %          options.output_fcn: function handle, default=[]
 %                              Specify one or more user-defined functions that an optimization function calls at each iteration. Pass a user defined function handle.
 %                              Return true or false to determine whether to stop the progress.
-%          options.scheme: integer, default=1
+%          options.step_scheme: string, default="euler"
 %                          Stepsize scheme in iterations of x and v.
-%                          1 Euler scheme with options.stepsize.
-%                          2 Line Search(TODO).
+%                          "euler": Euler scheme with options.stepsize.
+%                          "line_search": Line Search(TODO).
+%          options.subspace_scheme: string, default="LOBPCG"
+%                                   Subspace v update scheme.
+%                                   "power" Power method of I - beta*Hess with beta = options.stepsize(2)
+%                                   "LOBPSD" LOBPSD
+%                                   "LOBPCG" LOBPCG
+%                                   "rayleigh" Simultaneous Rayleigh-quotient minimization(TODO)
+%          options.preconditioner(TODO): (n, n) double, default=I
+%                                  Precondioner used in LOBPCG and LOBPSD.
+%          options.mgs_eps: double, default=1e-1
+%                           Epsilon used in LOBPSD and LOBPCG.
 %          options.l: double, default = 1e-9
 %                         Dimer length. Should be shrunk but neglected here.
 %          options.energy: function handle, default = @energy
 %                          Energy function.
+%          options.orth_scheme: string, default="mgs"
+%                               orthonormalization scheme.
+%                               "mgs" modified gram schmidt
+%                               "qr" qr
 % Returns
 % ==============================
 % x: (n,1) double
@@ -58,7 +68,7 @@ function [x, fval, exitflag, output] = hiosd(grad, x0, k, v0, options, varargin)
 %                         Exit message.
 %         output.v: (n,k) double
 %                   Unstable space of x if algorithm converges.
-% See also dimer, generate_v, mgs, plot_fval, myoutput
+% See also dimer, generate_v, mgs1, plot_fval, myoutput
 
 %% prepare parameters
 if ~exist('options','var')
@@ -80,16 +90,6 @@ if ~isfield(options,'stepsize')
 else
     stepsize = options.stepsize;
 end
-if ~isfield(options,'x_tol')
-    x_tol = 1e-4;
-else
-    x_tol = options.x_tol;
-end
-if ~isfield(options,'f_tol')
-    f_tol = 1e-4;
-else
-    f_tol = options.f_tol;
-end
 if ~isfield(options,'g_tol')
     g_tol = 1e-3;
 else
@@ -110,10 +110,25 @@ if ~isfield(options,'output_fcn')
 else
     output_fcn = options.output_fcn;
 end
-if ~isfield(options,'scheme')
-    scheme = 1;
+if ~isfield(options,'step_scheme')
+    step_scheme = "euler";
 else
-    scheme = options.scheme;
+    step_scheme = options.step_scheme;
+end
+if ~isfield(options,'subspace_scheme')
+    subspace_scheme = "LOBPCG";
+else
+    subspace_scheme = options.subspace_scheme;
+end
+if ~isfield(options,'preconditioner')
+    preconditioner = eye(length(x0));
+else
+    preconditioner = options.preconditioner;
+end
+if ~isfield(options,'mgs_eps')
+    mgs_eps = 1e-1;
+else
+    mgs_eps = options.mgs_eps;
 end
 if ~isfield(options,'l')
     l = 1e-6;
@@ -135,80 +150,137 @@ n_iter = 0;
 xn = x0;
 fn = -grad(xn);
 vn = v0;
-% en = energy(xn);
-e_bulk = bulk(xn);
-e_inter = inter(xn);
-global ratio
-if ratio(2) == 0
-    e_elas = 0;
-else
-    e_elas = elas(xn);
-end
-en = e_bulk + e_inter + e_elas;
+vnm1 = []; % for LOBPCG
+en = energy(xn);
+exitflag = 1;
 if ~isempty(plot_fcn)
     opt_values.n_iter = n_iter;
-    opt_values.e_bulk = e_bulk;
-    opt_values.e_inter = e_inter;
-    opt_values.e_elas = e_elas;
+    opt_values.fval = en;
     plot_fcn(en, opt_values);
 end
-exitflag = 1;
 
 %% HiOSD searching
-while n_iter < max_iter
-    gn = fn;
-    if mynorm(gn) < g_tol
+for n_iter = 1:max_iter
+    % check if first order converged
+    if mynorm(fn) < g_tol
         output.message = sprintf("Meet First-Order Optimality Tolerance.\n");
         exitflag = 1;
         break;
     end
+
+    % update x
+    % gn = fn - 2*sum_{i=1}^{k} <vni, fn>*vni, with vni = vn(:,i), with fn = -grad(xn).
+    gn = fn;
     for i = 1:k
         vni = vn(:,i);
         gn = gn - 2*dot(vni,fn)*vni;
     end
-    if scheme == 1
+    if step_scheme == "euler"
         xnp1 = xn + stepsize(1)*gn;
     end
+
+    % update v
     vnp1 = zeros(size(vn));
-    for i=1:k
-        vni = vn(:,i);
-        uni = dimer(grad, xnp1, l, vni);
-        if scheme == 1
-            vnp1(:,i) = vni - stepsize(2)*uni;
+    switch subspace_scheme
+        case "power" % power method on I - beta*Hess
+            for i=1:k
+                vni = vn(:,i);
+                % uni = (grad(xnp1+l*vni) - grad(xnp1-l*vni)) / (2*l), i.e. approximate Hess*vni
+                uni = dimer(grad, xnp1, l, vni);
+                if step_scheme == "euler"
+                    vnp1(:,i) = vni - stepsize(2)*uni;
+                end
+            end
+        case "LOBPSD" % LOBPSD
+            % construct unstable subspace span(vn, T*(Hess*vni - <vni, Hess*vni>*vni)) for i = 1 to k
+            res = zeros(size(vn));
+            for i=1:k
+                vni = vn(:,i);
+                uni = dimer(grad, xnp1, l, vni);
+                res(:,i) = uni - dot(vni, uni)*vni;
+            end
+            u_sd = [vn, res];
+            u_sd = mgs2(u_sd, k, mgs_eps);
+            % test_orth(u_sd);
+            sd = zeros(size(u_sd));
+            k_ = size(u_sd, 2);
+            for i=1:k_
+                y_sd(:,i) = dimer(grad, xnp1, l, u_sd(:,i));
+            end
+            p_sd = u_sd'*y_sd;
+            p_sd = (p_sd + p_sd')/2;
+            [V, ~] = eigs(p_sd , k, 'SM');
+            vnp1 = u_sd*V;
+        case "LOBPCG" % LOBPCG
+            % construct unstable subspace span(vn, vnm1, T*(Hess*vni - <vni, Hess*vni>*vni)) for i = 1 to k
+            res = zeros(size(vn));
+            for i=1:k
+                vni = vn(:,i);
+                uni = dimer(grad, xnp1, l, vni);
+                res(:,i) = uni - dot(vni, uni)*vni;
+            end
+            u_cg = [vn, vnm1, res];
+            u_cg = mgs2(u_cg, k, mgs_eps);
+            test_orth(u_cg);
+            y_cg = zeros(size(u_cg));
+            k_ = size(u_cg, 2);
+            for i=1:k_
+                y_cg(:,i) = dimer(grad, xnp1, l, u_cg(:,i));
+            end
+            p_cg = u_cg'*y_cg;
+            p_cg = (p_cg + p_cg')/2;
+            [V, ~] = eigs(p_cg , k, 'SM');
+            vnm1 = vn;
+            vnp1 = u_cg*V;
+        case "rayleigh" % simultaneous Rayleigh-quotient minimization
+            for i=1:k
+                vni = vn(:,i);
+                uni = dimer(grad, xnp1, l, vni);
+                dni = -uni + dot(vni, uni)*vni;
+                for j=1:i-1
+                    dni = dni + 2*dot(vn(:,j), uni)*vn(:,j);
+                end
+                if step_scheme == "euler"
+                    vnp1(:,i) = vni + stepsize(2)*dni;
+                end
+            end
+        otherwise
+            errID = "HiOSD:UnknownSubspaceScheme";
+            msgtext = "Invalid subspace_scheme";
+            ME = MException(errID,msgtext);
+            throw(ME);
+
+        % orthnormalize
+        if orth_scheme == "mgs"
+            vnp1 = mgs1(vnp1);
+        elseif orth_scheme == "qr"
+            [vnp1, ~] = qr(vnp1, 0);
         end
     end
-    %     vnp1 = mgs(vnp1);
-    [vnp1, ~] = qr(vnp1, 0);
-%     test_orth(vnp1)
-    
+
     xn = xnp1;
     vn = vnp1;
-    n_iter = n_iter + 1;
     fn = -grad(xn);
-    
-    %     en = energy(xn);
-    e_bulk = bulk(xn);
-    e_inter = inter(xn);
-    if ratio(2) == 0
-        e_elas = 0;
-    else
-        e_elas = elas(xn);
-    end
-    en = e_bulk + e_inter + e_elas;
+    en = energy(xn);
 
+    % check if energy exceeds upper bound
     if en > 1e4
         output.message = sprintf("Function value exceeds 1e4.\n");
         exitflag = 0;
+        if display == "notify"
+            fprintf("HiOSD does not converge. " + output.message);
+        end
         break;
     end
-    
+
+    % plot energy functions 
     if ~isempty(plot_fcn)
         opt_values.n_iter = n_iter;
-        opt_values.e_bulk = e_bulk;
-        opt_values.e_inter = e_inter;
-        opt_values.e_elas = e_elas;
+        opt_values.fval = en;
         plot_fcn(en, opt_values);
     end
+    
+    % user defined output function 
     if ~isempty(output_fcn)
         opt_values.n_iter = n_iter;
         opt_values.fval = en;
@@ -232,7 +304,11 @@ while n_iter < max_iter
         end
     end
     if display == "iter"
-        fprintf("#iter=%d\tfunc_value=%e\t der_norm=%e\n", n_iter, en, mynorm(fn));
+        if exist("k_", "var")
+            fprintf("#iter=%d\tfunc_value=%e\t der_norm=%e\t #dim_v=%d\n", n_iter, en, mynorm(fn), k_);
+        else
+            fprintf("#iter=%d\tfunc_value=%e\t der_norm=%e\n", n_iter, en, mynorm(fn));
+        end
     end
 end
 
@@ -241,7 +317,7 @@ x = xn;
 fval = energy(x);
 if n_iter == max_iter
     exitflag = 0;
-    output.message = sprintf("Exceed Max Iterations.\n");
+    output.message = sprintf("Reach Max Iterations.\n");
     if display == "notify"
         fprintf("HiOSD does not converge. " + output.message);
     end
