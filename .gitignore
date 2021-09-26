@@ -1,12 +1,5 @@
 tmp/
 results/*
-*.mat
-*.out
-*.err
-*.txt
-*.jpg
-*.png
-*.fig
 .DS_Store
 */.DS_Store
 tags

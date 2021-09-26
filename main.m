@@ -29,7 +29,6 @@ options.seed = 1;
 options.r_tol = 1e-3;
 options.orth_scheme = "mgs";
 options.subspace_scheme = "LOBPCG"; % LOBPCG
-options.preconditioner = eye(n); % TODO
 options.mgs_eps = 1e-1; % tol for modified Gram-Schmidt
 % HiOSD params
 options.max_iter = max_iter;

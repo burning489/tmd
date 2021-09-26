@@ -37,9 +37,7 @@ function [x, fval, exitflag, output] = hiosd(grad, x0, k, v0, options, varargin)
 %                                   "power" Power method of I - beta*Hess with beta = options.stepsize(2)
 %                                   "LOBPSD" LOBPSD
 %                                   "LOBPCG" LOBPCG
-%                                   "rayleigh" Simultaneous Rayleigh-quotient minimization(TODO)
-%          options.preconditioner(TODO): (n, n) double, default=I
-%                                  Precondioner used in LOBPCG and LOBPSD.
+%                                   "rayleigh" Simultaneous Rayleigh-quotient minimization
 %          options.mgs_eps: double, default=1e-1
 %                           Epsilon used in LOBPSD and LOBPCG.
 %          options.l: double, default = 1e-9
@@ -120,11 +118,6 @@ if ~isfield(options,'subspace_scheme')
 else
     subspace_scheme = options.subspace_scheme;
 end
-if ~isfield(options,'preconditioner')
-    preconditioner = eye(length(x0));
-else
-    preconditioner = options.preconditioner;
-end
 if ~isfield(options,'mgs_eps')
     mgs_eps = 1e-1;
 else
@@ -159,7 +152,7 @@ if ~isempty(plot_fcn)
     plot_fcn(en, opt_values);
 end
 
-%% HiOSD searching
+%% searching
 for n_iter = 1:max_iter
     % check if first order converged
     if mynorm(fn) < g_tol

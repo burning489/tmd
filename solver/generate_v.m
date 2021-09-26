@@ -1,27 +1,25 @@
 function v = generate_v(grad, x, k, options)
-% generate_v generate an orthonormal basis of the k-dimension unstable subspace of x, i.e. x is a local maximum on v, or v is span of the smallest k eigenvectors of hess(x).
+% GENERATE_V generate an orthonormal basis of the k-dimension unstable subspace of x, i.e. x is a local maximum on v, or v is span of the smallest k eigenvectors of hess(x).
 % parameters
 % ==============================
 % grad: function handle
 %       derivative of function.
 % x: (n,1) double
 % k: integer
-%    index of target saddle point.
+%    Dimension of the unstable subspace, or the number of the smallest eigenparis to compute.
 % options: struct
 %          options.stepsize: 1*2 double, default = [1e-3 1e-3]
 %                            stepsize in iterations of x and v respectively.
 %          options.l: double, default=1e-6
 %                             dimer length.
-%          options.seed: integer or string, default="default"
+%          options.seed: integer, default=0
 %                        seed of random number generator.
 %          options.subspace_scheme: string, default="LOBPCG"
 %                                   Subspace v update scheme.
 %                                   "power" Power method of I - beta*Hess with beta = options.stepsize(2)
 %                                   "LOBPSD" LOBPSD
 %                                   "LOBPCG" LOBPCG
-%                                   "rayleigh" Simultaneous Rayleigh-quotient minimization(TODO)
-%          options.preconditioner(todo): (n, n) double, default=i
-%                                  precondioner used in lobpcg and lobpsd.
+%                                   "rayleigh" Simultaneous Rayleigh-quotient minimization
 %          options.mgs_eps: double, default=1e-1
 %                           epsilon used in lobpsd and lobpcg.
 %          options.max_gen_iter: integer, default=1e2
@@ -29,10 +27,16 @@ function v = generate_v(grad, x, k, options)
 %          options.r_tol: double, default=1e-3
 %                         tolerance for residuals.
 %          options.orth_scheme: string, default="mgs"
-%                               orthonormalization scheme.
+%                               Orthonormalization scheme after each iteration.
 %                               "mgs" modified gram schmidt
-%                               "qr" qr
-% see also dimer, mgs1
+%                               "qr" qr decomposition
+%          options.step_scheme: string, default="euler"
+%                          Stepsize scheme in iterations of x and v.
+%                          "euler": Euler scheme with options.stepsize.
+%                          "line_search": Line Search(TODO).
+% see also dimer, mgs1, mgs2
+
+%% prepare parameters
 if ~exist('options','var')
     options = []; 
 end
@@ -47,7 +51,7 @@ else
     l = options.l;
 end
 if ~isfield(options,'seed')
-    seed = 'default';  
+    seed = 0;
 else
     seed = options.seed;
 end
@@ -55,11 +59,6 @@ if ~isfield(options,'subspace_scheme')
     subspace_scheme = "LOBPCG";
 else
     subspace_scheme = options.subspace_scheme;
-end
-if ~isfield(options,'preconditioner')
-    preconditioner = eye(length(x0));
-else
-    preconditioner = options.preconditioner;
 end
 if ~isfield(options,'mgs_eps')
     mgs_eps = 1e-1;
@@ -81,53 +80,79 @@ if ~isfield(options, 'orth_scheme')
 else
     orth_scheme = options.orth_scheme;
 end
+if ~isfield(options,'step_scheme')
+    step_scheme = "euler";
+else
+    step_scheme = options.step_scheme;
+end
+
+% preprations
 rng(seed);
 n = length(x);
 v = randn(n,k);
-vm1 = [];
+vm1 = []; % for LOBPCG and simultaneous Rayleigh iteration
+
 for iter = 1:max_gen_iter
     switch subspace_scheme
     case "power"
+        % v <- (I - beta*H)*v
+        % vi <- vi - beta*H*vi
         for i=1:k
             vi = v(:,i);
             v(:,i) = vi - stepsize(2)*dimer(grad, x, l, vi);
         end
     case "LOBPSD"
+        % res <- H*v - v*diag(v'*H*v)
         res = zeros(size(v));
         for i=1:k
              vi = v(:,i);
              ui = dimer(grad, x, l, vi);
              res(:,i) = ui - dot(vi, ui)*vi;
         end
+        % u <- span(v, res)
         u_sd = [v, res];
+        % orthogonalize w.r.t. v, and drop (relatively) small terms
         u_sd = mgs2(u_sd, k, mgs_eps);
+        % Rayleigh-Ritz methods to calculate eigenpairs
+        % evd on u'*H*u, and get Ritz pairs: eigenvalues directly and vecs as u*V
+        % y <- H*u
         y_sd = zeros(size(u_sd));
         for i=1:size(u_sd, 2)
             y_sd(:,i) = dimer(grad, x, l, u_sd(:,i));
         end
+        % p <- u'*y
+        % p <- (p'+p)/2 for symmetry
         p_sd = u_sd'*y_sd;
         p_sd = (p_sd + p_sd')/2;
-        [V, ~] = eigs(p_sd , k, 'SM');
+        [V, D] = eigs(p_sd , k, 'SM');
         v = u_sd*V;
     case "LOBPCG"
+        % res <- H*v - v*diag(v'*H*v)
         res = zeros(size(v));
         for i=1:k
             vi = v(:,i);
             ui = dimer(grad, x, l, vi);
             res(:,i) = ui - dot(vi, ui)*vi;
         end
+        % u <- span(v, vm1, res)
         u_cg = [v, vm1, res];
+        % orthogonalize w.r.t. v, and drop (relatively) small terms
         u_cg = mgs2(u_cg, k, mgs_eps);
+        % Rayleigh-Ritz methods to calculate eigenpairs
+        % evd on u'*H*u, and get Ritz pairs: eigenvalues directly and vecs as u*V
+        % y <- H*u
         y_cg = zeros(size(u_cg));
         for i=1:size(u_cg, 2)
             y_cg(:,i) = dimer(grad, x, l, u_cg(:,i));
         end
+        % p <- u'*y
+        % p <- (p'+p)/2 for symmetry
         p_cg = u_cg'*y_cg;
         p_cg = (p_cg + p_cg')/2;
-        [V, ~] = eigs(p_cg , k, 'SM');
+        [V, D] = eigs(p_cg , k, 'SM');
         vm1 = v;
         v = u_cg*V;
-    case "rayleigh"
+    case "rayleigh" % simultaneously (not suggested, numerically stable)
         vm1 = v;
         for i=1:k
             vi = vm1(:,i);
@@ -141,20 +166,24 @@ for iter = 1:max_gen_iter
             end
         end
     end
+
+    % orthonormalize
     if orth_scheme == "mgs"
         v = mgs1(v);
     elseif orth_scheme == "qr"
         [v, ~] = qr(v, 0);
     end
-    av = zeros(size(v));
+
+    % error
+    hv = zeros(size(v));
     for i=i:k
-        av(:,i) = dimer(grad, x, l, v(:,i));
+        hv(:,i) = dimer(grad, x, l, v(:,i));
     end
-    eigens = v'*av;
-    residuals = av - v*eigens;
+    eigens = v'*hv;
+    residuals = hv - v*eigens;
     norm_res = norm(residuals, 'fro');
-    norm_av = norm(av, 'fro');
-    if norm_res < r_tol*norm_av
+    norm_hv = norm(hv, 'fro');
+    if norm_res < r_tol*norm_hv
         return;
     end
 end
