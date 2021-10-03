@@ -23,7 +23,7 @@ fprintf(fileID, "\t""orth_scheme"": ""%s"",\n", options.orth_scheme);
 fprintf(fileID, "\t""subspace_scheme"": ""%s"",\n", options.subspace_scheme);
 % physics model param
 fprintf(fileID, "\t""kappa"": %d\n", kappa);
-fprintf(fileID, "\t""ratios"": [%f %f],\n", ratios[1], ratios[2]);
+fprintf(fileID, "\t""ratios"": [%f %f],\n", ratios(1), ratios(2));
 fprintf(fileID, "}");
 fclose(fileID);
 end

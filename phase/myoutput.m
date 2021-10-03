@@ -32,4 +32,3 @@ if state == "init" || state == "done" || mod(optimValues.n_iter, 1e2) == 0
     save(sprintf(root_path+"/results/run%03d/data/xv_%d.mat", runid, optimValues.n_iter), "x", "v");
 end
 end
-

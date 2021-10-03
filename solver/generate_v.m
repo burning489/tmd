@@ -1,6 +1,6 @@
-function v = generate_v(grad, x, k, options)
-% GENERATE_V generate an orthonormal basis of the k-dimension unstable subspace of x, i.e. x is a local maximum on v, or v is span of the smallest k eigenvectors of hess(x).
-% parameters
+function [v, eig_vals] = gen_v(grad, x, k, options)
+% GEN_V Generate an orthonormal basis of the k-dimension unstable subspace of x, i.e. x is a local maximum on v, or v is span of the smallest k eigenvectors of hess(x).
+% Parameters
 % ==============================
 % grad: function handle
 %       derivative of function.
@@ -11,7 +11,7 @@ function v = generate_v(grad, x, k, options)
 %          options.stepsize: 1*2 double, default = [1e-3 1e-3]
 %                            stepsize in iterations of x and v respectively.
 %          options.l: double, default=1e-6
-%                             dimer length.
+%                     dimer length.
 %          options.seed: integer, default=0
 %                        seed of random number generator.
 %          options.subspace_scheme: string, default="LOBPCG"
@@ -31,9 +31,15 @@ function v = generate_v(grad, x, k, options)
 %                               "mgs" modified gram schmidt
 %                               "qr" qr decomposition
 %          options.step_scheme: string, default="euler"
-%                          Stepsize scheme in iterations of x and v.
-%                          "euler": Euler scheme with options.stepsize.
-%                          "line_search": Line Search(TODO).
+%                               Stepsize scheme in iterations of x and v.
+%                               "euler": Euler scheme with options.stepsize.
+%                               other schemes: TODO
+% Returns
+% ==============================
+% v: (n,k) double
+%    Unstable subspace.
+% eig_vals: (k,1) double, returns if subspace_scheme="LOBPSD"/"LOBPCG"
+%           Eigenvalues corresponding to v.
 % see also dimer, mgs1, mgs2
 
 %% prepare parameters
@@ -91,7 +97,9 @@ rng(seed);
 n = length(x);
 v = randn(n,k);
 vm1 = []; % for LOBPCG and simultaneous Rayleigh iteration
+eig_vals = [];
 
+% iterations
 for iter = 1:max_gen_iter
     switch subspace_scheme
     case "power"
@@ -172,6 +180,11 @@ for iter = 1:max_gen_iter
         v = mgs1(v);
     elseif orth_scheme == "qr"
         [v, ~] = qr(v, 0);
+    else
+        errID = "GEN_V:UnknownOrthScheme";
+        msgtext = "gen_v receive wrong orth_scheme";
+        ME = MException(errID,msgtext);
+        throw(ME);
     end
 
     % error
@@ -187,5 +200,8 @@ for iter = 1:max_gen_iter
         return;
     end
 end
-warning("GENERATE_V does not converge\n");
+if ~exist('D', 'var')
+    eig_vals = diag(D); 
+end
+warning("GEN_V does not converge\n");
 end

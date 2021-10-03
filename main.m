@@ -21,7 +21,7 @@ options.k0 = 0;
 options.k = k;
 options.perturb_eps = 1e1;
 options.perturb_index = 1:k;
-% generate_v params
+% gen_v params
 options.max_gen_iter = 1e2;
 options.stepsize = [1e-3 1e-3];
 options.l = 1e-6;
@@ -49,7 +49,7 @@ figure("Visible", "off");
 %% initial x and v0
 x0 = zeros(3*n, 1);
 % x0(1:n) = -1;
-v0 = generate_v(grad, x0, k, options);
+v0 = gen_v(grad, x0, k, options);
 % v0 = randn(3*n, k);
 % [v0, ~] = qr(v0, 0);
 for i=1:length(options.perturb_index)

@@ -1,5 +1,3 @@
-tmp/
-results/*
+tmpresults/*
 .DS_Store
 */.DS_Store
-tags
