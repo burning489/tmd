@@ -1,11 +1,5 @@
-%% path management 
-addpath(genpath("."));
-
-if ~exist("results", 'dir')
-    mkdir("results/")
-end
-
 %% global variables
+% model params
 global N max_iter a b c kappa Lx Ly stiffness theta s_0 e_0 kx ky EPS ratio root_path;
 max_iter = 2e6;
 kappa = 0.005;
@@ -13,7 +7,7 @@ syms theta;
 EPS = 1e-10;
 N = 64;
 Lx = 1;
-Ly = 1;
+Ly = 2;
 MU = 50;
 NU = 0.24;
 E_XX_0 = -0.0299;
@@ -22,7 +16,12 @@ THETA = [0, 2*pi/3, -2*pi/3];
 a = 2.4; b=8.4; c=6;
 ratio = [1, 1];
 n = N^2;
-root_path = pwd;
+% path management
+root_path = fileparts(mfilename('fullpath'));
+addpath(genpath(root_path));
+if ~exist(root_path+"/results", 'dir')
+    mkdir(root_path+"/results/")
+end
 
 %% Kronecker Delta function
 k_delta = @(x, y) double(x==y);

@@ -1,14 +1,7 @@
-function [exx, exy, eyy] = strain(eta, ~)
+function [exx, exy, eyy] = strain(eta)
 % STRAIN Compute strain for phase parameter (3*N*N,1) eta.
 % model parameters
 global N Lx Ly stiffness s_0 kx ky;
-
-% initial phase field 1
-% eta(:,:,1) = sin(2*pi*(xx*Lx+yy*Ly));
-% eta(1:N*N) = reshape(sin(2*pi*(xx*Lx+yy*Ly)), N*N, 1);
-
-% initial phase field 2
-% eta(:,1:N/2,1) = 1;
 
 % displacement
 r1 = zeros(N, N);

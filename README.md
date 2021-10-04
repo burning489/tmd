@@ -7,6 +7,7 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
 2. phase: energy function related
 3. utils: auxiliary functions
 4. scripts: test scripts
+  - test_elastic test normalization on elastic energy, draw 4*3 subplots to illustrate, every line contains strain on xx, xy and yy at different configurations: Lx,Ly=1,N=64; Lx,Ly=1,N=128; Lx,Ly=0.5,N=64 and Lx,Ly=1, N=128 constrained at the [0,0.5]\*[0,0.5] square.
 
 ## Implemention
 
