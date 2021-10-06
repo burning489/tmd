@@ -28,6 +28,7 @@ options.l = 1e-6;
 options.seed = 1;
 options.r_tol = 1e-3;
 options.orth_scheme = "mgs";
+options.step_scheme = "euler"; % Euler Scheme
 options.subspace_scheme = "LOBPCG"; % LOBPCG
 options.mgs_eps = 1e-1; % tol for modified Gram-Schmidt
 % HiOSD params

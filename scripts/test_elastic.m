@@ -6,7 +6,7 @@ setup;
 eta = zeros(3*N*N, 1);
 t = linspace(0,1,N);
 [xx, yy] = meshgrid(t);
-eta(1:N*N) = reshape(sin(2*pi*(xx*Lx+yy*Ly)), N*N, 1);
+eta(1:N*N) = reshape(sin(2*pi*(2*xx*Lx+yy*Ly)), N*N, 1);
 
 % initial phase field 2
 % eta = zeros(3*N*N, 1);
@@ -29,7 +29,7 @@ N = 128;
 eta = zeros(3*N*N, 1);
 t = linspace(0,1,N);
 [xx, yy] = meshgrid(t);
-eta(1:N*N) = reshape(sin(2*pi*(xx*Lx+yy*Ly)), N*N, 1);
+eta(1:N*N) = reshape(sin(2*pi*(2*xx*Lx+yy*Ly)), N*N, 1);
 
 [exx2, exy2, eyy2] = strain(eta);
 exx2 = reshape(exx2, N, N);
@@ -48,7 +48,7 @@ Lx = 0.5; Ly=0.5; N=64;
 eta = zeros(3*N*N, 1);
 t = linspace(0,1,N);
 [xx, yy] = meshgrid(t);
-eta(1:N*N) = reshape(sin(2*pi*(xx*Lx+yy*Ly)), N*N, 1);
+eta(1:N*N) = reshape(sin(2*pi*(2*xx*Lx+yy*Ly)), N*N, 1);
 
 [exx3, exy3, eyy3] = strain(eta);
 exx3 = reshape(exx3, N, N);
@@ -67,7 +67,7 @@ Lx = 1; Ly=1; N=128;
 eta = zeros(3*N*N, 1);
 t = linspace(0,1,N);
 [xx, yy] = meshgrid(t);
-eta(1:N*N) = reshape(sin(2*pi*(xx*Lx+yy*Ly)), N*N, 1);
+eta(1:N*N) = reshape(sin(2*pi*(2*xx*Lx+yy*Ly)), N*N, 1);
 
 [exx4, exy4, eyy4] = strain(eta);
 exx4 = reshape(exx4, N, N);

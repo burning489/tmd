@@ -202,7 +202,7 @@ for n_iter = 1:max_iter
             end
             p_sd = u_sd'*y_sd;
             p_sd = (p_sd + p_sd')/2;
-            [V, ~] = eigs(p_sd , k, 'SM');
+            [V, ~] = eigs(p_sd , k, 'smallestreal');
             vnp1 = u_sd*V;
         case "LOBPCG" % LOBPCG
             % construct unstable subspace span(vn, vnm1, T*(Hess*vni - <vni, Hess*vni>*vni)) for i = 1 to k
@@ -222,7 +222,7 @@ for n_iter = 1:max_iter
             end
             p_cg = u_cg'*y_cg;
             p_cg = (p_cg + p_cg')/2;
-            [V, ~] = eigs(p_cg , k, 'SM');
+            [V, ~] = eigs(p_cg , k, 'smallestreal');
             vnm1 = vn;
             vnp1 = u_cg*V;
         case "rayleigh" % simultaneous Rayleigh-quotient minimization

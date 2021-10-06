@@ -39,7 +39,7 @@ function [v, eig_vals] = gen_v(grad, x, k, options)
 % v: (n,k) double
 %    Unstable subspace.
 % eig_vals: (k,1) double, returns if subspace_scheme="LOBPSD"/"LOBPCG"
-%           Eigenvalues corresponding to v.
+%           Rayleigh quotient corresponding to v.
 % see also dimer, mgs1, mgs2
 
 %% prepare parameters
@@ -132,7 +132,7 @@ for iter = 1:max_gen_iter
         % p <- (p'+p)/2 for symmetry
         p_sd = u_sd'*y_sd;
         p_sd = (p_sd + p_sd')/2;
-        [V, D] = eigs(p_sd , k, 'SM');
+        [V, D] = eigs(p_sd , k, 'smallestreal');
         v = u_sd*V;
     case "LOBPCG"
         % res <- H*v - v*diag(v'*H*v)
@@ -157,9 +157,13 @@ for iter = 1:max_gen_iter
         % p <- (p'+p)/2 for symmetry
         p_cg = u_cg'*y_cg;
         p_cg = (p_cg + p_cg')/2;
-        [V, D] = eigs(p_cg , k, 'SM');
+        [V, D] = eigs(p_cg , k, 'smallestreal');
         vm1 = v;
         v = u_cg*V;
+        for i=1:k
+            fprintf("%f\t", D(i,i));
+        end
+        fprintf("\n");
     case "rayleigh" % simultaneously (not suggested, numerically stable)
         vm1 = v;
         for i=1:k
@@ -196,11 +200,16 @@ for iter = 1:max_gen_iter
     residuals = hv - v*eigens;
     norm_res = norm(residuals, 'fro');
     norm_hv = norm(hv, 'fro');
+    fprintf("res:%f\thv:%f\trelative_percent:%f\n", norm_res, norm_hv, norm_res/norm_hv);
     if norm_res < r_tol*norm_hv
+        fprintf("#gen_iter=%d\n", iter);
+        if exist('D', 'var')
+            eig_vals = diag(D); 
+        end
         return;
     end
 end
-if ~exist('D', 'var')
+if exist('D', 'var')
     eig_vals = diag(D); 
 end
 warning("GEN_V does not converge\n");

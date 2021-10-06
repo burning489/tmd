@@ -1,4 +1,5 @@
 ## Energy landscape construct
+
 This repository contains MATLAB code implementing High-Index based Dimer method (by Zhang Lei) of constructing a pathway map of saddle points on an energy surface(TMD structure).
 
 ## Code Structure
@@ -7,7 +8,7 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
 2. phase: energy function related
 3. utils: auxiliary functions
 4. scripts: test scripts
-  - test_elastic test normalization on elastic energy, draw 4*3 subplots to illustrate, every line contains strain on xx, xy and yy at different configurations: Lx,Ly=1,N=64; Lx,Ly=1,N=128; Lx,Ly=0.5,N=64 and Lx,Ly=1, N=128 constrained at the [0,0.5]\*[0,0.5] square.
+  - test_elastic test normalization on elastic energy sin(2\*pi*(2\*x+y)), draw 4*3 subplots to illustrate, every line contains strain on xx, xy and yy at different configurations: Lx,Ly=1,N=64; Lx,Ly=1,N=128; Lx,Ly=0.5,N=64 and Lx,Ly=1, N=128 constrained at the [0,0.5]\*[0,0.5] square.
 
 ## Implemention
 
@@ -32,16 +33,24 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
 
 ## Remarks
 
-1. If i start upward search from assumed index-0 saddle, random orthogonal initial guess v should be fine. But if i want to seach upward/downward from index-k saddle, downward search needs the computed k eigenvectors, while upward one needs to compute more eigenvectors orthogonal to the known k eigenvectors, i.e. construct a index m(m>k) unstable subspace v_m of x with negative eigenvalues, then mgs w.r.t. v_k. In all, i must know the correct index of the starting saddle to do the right perturbation.
+1. If i start upward search from assumed index-0 saddle, random orthogonal initial guess v will just do. But if i want to seach upward/downward from index-k saddle, downward search needs the computed k eigenvectors, while upward one needs to compute more eigenvectors orthogonal to the known k eigenvectors, i.e. construct a index m(m>k) unstable subspace v_m of x with negative eigenvalues, then mgs w.r.t. v_k. In all, i must know the correct index of the starting saddle to do the right perturbation.
 
 2. might need to check the influence of the dimer length
 
-3. if all-zero is indeed index-0, the initial guess v could be random orthogonal vectors
+3. descent or ascent along v might not be a good standard, should consider draw surface along any two directions 
 
 ## TODO
 
-1. test on elastic
-2. use gen_v to calculate the eigenpais of current 3 results
-3. rerun the upward search with corrected switch sentence
-4. with computed exact index of the results, try downward search
-5. if the above not working, remove the elastic part and retry
+- [x] test on elastic
+- [ ] use gen_v to calculate the eigenpais of current 3 results
+  - all zero: index-0, any direction is ascent direction and eigenvalues are positive
+  - single circle in one phase: index-4, with smallest positive eigenvalue 0.026, which is likely to be zero, energy decreases along the corresponding (4+1) eigenvectors, the 0.026 eigenpair might require discussion
+  - double circle in one phase: index-8, requires more discussion, cannot see information from v
+- [ ] rerun the upward search with corrected switch sentence
+- [ ] with computed exact index of the results, try downward search
+- [ ] if the above not working, remove the elastic part and retry
+- [ ] consider multi v update in each iteration
+
+
+## Bugs
+- [ ] LOBPSD and LOBPCG in hiosd use wrong parameter for eigs, should replace SM with smllestreal

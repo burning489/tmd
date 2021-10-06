@@ -8,23 +8,16 @@ function test_energy(f, x, v)
 %    Unstable subspace at x.
 figure;
 L = 0.5;
-t = -L:1e-2:L;
-if size(v,2) > 1
-    [xx, yy] = meshgrid(t, t);
-    Z = zeros(size(xx));
-    for i=1:length(t)
-        for j=1:length(t)
-            Z(i,j) =  f(x + xx(i,j)*v(:,1) + yy(i,j)*v(:,2));
-        end
+t = -L:0.05:L;
+assert(size(v,2)==2)
+[xx, yy] = meshgrid(t, t);
+Z = zeros(size(xx));
+for i=1:length(t)
+    for j=1:length(t)
+        Z(i,j) =  f(x + xx(i,j)*v(:,1) + yy(i,j)*v(:,2));
     end
-    surf(xx, yy, Z);
-else
-    y = zeros(size(t));
-    for i=1:length(t)
-        y(i) = f(x + t(i)*v);
-    end
-    plot(t,y);
 end
+surf(xx, yy, Z);
 end
 
 
