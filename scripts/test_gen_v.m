@@ -17,11 +17,7 @@ options.subspace_scheme = "LOBPCG"; % LOBPCG
 options.mgs_eps = 1e-1; % tol for modified Gram-Schmidt
 
 % eta = zeros(3*N*N, 1);
-x = load("~/Downloads/run004/results.mat").x;
+x = load("~/Downloads/run003/results.mat").x;
 [v, eig_vals] = gen_v(grad, x, k, options);
 
 fprintf("#index of unstable subspace:%d\n", sum(eig_vals<0));
-
-test_ascent(@energy, x, v);
-
-save('results/result_002.mat', 'x', 'v', 'eig_vals');

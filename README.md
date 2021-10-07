@@ -26,6 +26,9 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
 
 ## Results
 
+- result001 one circle in one phase, with energy along computed v
+- result002 double circles in one phase, with energy along computed v
+
 1. all zero phase (assumed to be global minimum, index=0)
 2. circle in one phase (index=1?TODO)
 3. double circles in one phase (index=4?TODO)
@@ -37,7 +40,7 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
 
 2. might need to check the influence of the dimer length
 
-3. descent or ascent along v might not be a good standard, should consider draw surface along any two directions 
+3. descent or ascent along v might not be a good standard, now i plot surface along any two basis from v, energy along v1 and v2 seems flat but other v seem a basin
 
 ## TODO
 
@@ -45,7 +48,7 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
 - [ ] use gen_v to calculate the eigenpais of current 3 results
   - all zero: index-0, any direction is ascent direction and eigenvalues are positive
   - single circle in one phase: index-4, with smallest positive eigenvalue 0.026, which is likely to be zero, energy decreases along the corresponding (4+1) eigenvectors, the 0.026 eigenpair might require discussion
-  - double circle in one phase: index-8, requires more discussion, cannot see information from v
+  - double circles in one phase: index-8, requires more discussion, cannot see information from v
 - [ ] rerun the upward search with corrected switch sentence
 - [ ] with computed exact index of the results, try downward search
 - [ ] if the above not working, remove the elastic part and retry
