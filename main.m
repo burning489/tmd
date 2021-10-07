@@ -5,6 +5,7 @@ setup;
 
 % output folder
 global runid;
+runid = 2;
 run_folder = sprintf(pwd+"/results/run%03d", runid);
 if exist(run_folder, "dir")
     system("rm -rf "+run_folder);
@@ -16,7 +17,7 @@ diary(run_folder+"/log.txt");
 
 %% params
 grad = @derivative;
-k = 2;
+k = 1;
 options.k0 = 0;
 options.k = k;
 options.perturb_eps = 1e1;
@@ -42,17 +43,17 @@ options.display = "iter";
 % save params
 save_options(options);
 
-figure("Visible", "off"); % for server use
-figure("Visible", "off");
-% figure();
-% figure();
+% figure("Visible", "off"); % for server use
+% figure("Visible", "off");
+figure();
+figure();
 
 %% initial x and v0
-x0 = zeros(3*n, 1);
-% x0(1:n) = -1;
-v0 = gen_v(grad, x0, k, options);
-% v0 = randn(3*n, k);
-% [v0, ~] = qr(v0, 0);
+% x0 = zeros(3*n, 1);
+x0 = load("results/result_003.mat").x;
+% v0 = gen_v(grad, x0, k, options);
+v0 = randn(3*n, k);
+[v0, ~] = qr(v0, 0);
 for i=1:length(options.perturb_index)
     x0 = x0 + options.perturb_eps*v0(:,options.perturb_index(i));
 end

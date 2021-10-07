@@ -1,5 +1,5 @@
 function save_options(options)
-global root_path runid kappa ratios;
+global root_path runid kappa ratio;
 fileID = fopen(sprintf(root_path+"/results/run%03d/settings.json", runid), "w");
 fprintf(fileID, "{\n");
 fprintf(fileID, "\t""start_index"": %d,\n", options.k0);
@@ -23,7 +23,7 @@ fprintf(fileID, "\t""orth_scheme"": ""%s"",\n", options.orth_scheme);
 fprintf(fileID, "\t""subspace_scheme"": ""%s"",\n", options.subspace_scheme);
 % physics model param
 fprintf(fileID, "\t""kappa"": %d\n", kappa);
-fprintf(fileID, "\t""ratios"": [%f %f],\n", ratios(1), ratios(2));
+fprintf(fileID, "\t""ratio"": [%f %f],\n", ratio(1), ratio(2));
 fprintf(fileID, "}");
 fclose(fileID);
 end

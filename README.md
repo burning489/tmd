@@ -27,8 +27,9 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
 
 ## Results
 
-- result001 one circle in one phase, with energy along computed v
-- result002 double circles in one phase, with energy along computed v
+- result001 one circle in one phase
+- result002 double circles in one phase
+- result003 a thin stick in one phase, index=0 with a degenerate eigenpair, got from upward search from all zero with k=1
 
 ## Remarks
 

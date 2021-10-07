@@ -12,6 +12,6 @@ export MATLAB_PREFDIR=/tmp/dingzhao_matlab
 
 cd $SLURM_SUBMIT_DIR
 
-module load matlab/R2018b
+module load matlab/R2020a
 
 matlab -nosplash -nodisplay -nodesktop -r "global runid; runid = 1; run('main.m')"

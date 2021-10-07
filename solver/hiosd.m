@@ -31,7 +31,10 @@ function [x, fval, exitflag, output] = hiosd(grad, x0, k, v0, options, varargin)
 %          options.step_scheme: string, default="euler"
 %                               Stepsize scheme in iterations of x and v.
 %                               "euler" Euler scheme with options.stepsize
-%                               other schemes: TODO 
+%          options.orth_scheme: string, default="mgs"
+%                               Orthogonalization scheme.
+%                               "mgs" modified Gram Schmidt
+%                               "qr" QR decomposition
 %          options.subspace_scheme: string, default="LOBPCG"
 %                                   Subspace v update scheme.
 %                                   "power" Power method of I - beta*Hess with beta = options.stepsize(2)
@@ -112,6 +115,11 @@ if ~isfield(options,'step_scheme')
     step_scheme = "euler";
 else
     step_scheme = options.step_scheme;
+end
+if ~isfield(options,'orth_scheme')
+    orth_scheme = "mgs";
+else
+    orth_scheme = options.orth_scheme;
 end
 if ~isfield(options,'subspace_scheme')
     subspace_scheme = "LOBPCG";
