@@ -8,7 +8,9 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
 2. phase: energy function related
 3. utils: auxiliary functions
 4. scripts: test scripts
-  - test_elastic test normalization on elastic energy sin(2\*pi*(2\*x+y)), draw 4*3 subplots to illustrate, every line contains strain on xx, xy and yy at different configurations: Lx,Ly=1,N=64; Lx,Ly=1,N=128; Lx,Ly=0.5,N=64 and Lx,Ly=1, N=128 constrained at the [0,0.5]\*[0,0.5] square.
+  - test_elastic: test normalization on elastic energy sin(2\*pi*(2\*x+y)), draw 4*3 subplots to illustrate, every line contains strain on xx, xy and yy at different configurations: Lx,Ly=1,N=64; Lx,Ly=1,N=128; Lx,Ly=0.5,N=64 and Lx,Ly=1, N=128 constrained at the [0,0.5]\*[0,0.5] square.
+  - test_gen_v: generate v for some x with some k
+  - test_plot_v: plot energy surface around x along any 2 basis from v
 
 ## Implemention
 
@@ -21,7 +23,6 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
   - use modified Gram-Schmidt process(default) or MATLAB default QR to do the orthonomalizaion
 
 2. problem
-	- length normalization, test on Lx, Ly(TODO)
 	- need correct derivative(TODO)
 
 ## Results
@@ -45,11 +46,11 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
 ## TODO
 
 - [x] test on elastic
-- [ ] use gen_v to calculate the eigenpais of current 3 results
+- [x] use gen_v to calculate the eigenpais of current 3 results
   - all zero: index-0, any direction is ascent direction and eigenvalues are positive
   - single circle in one phase: index-4, with smallest positive eigenvalue 0.026, which is likely to be zero, energy decreases along the corresponding (4+1) eigenvectors, the 0.026 eigenpair might require discussion
   - double circles in one phase: index-8, requires more discussion, cannot see information from v
-- [ ] rerun the upward search with corrected switch sentence
+- [ ] rerun the upward search from all zero with corrected switch sentence
 - [ ] with computed exact index of the results, try downward search
 - [ ] if the above not working, remove the elastic part and retry
 - [ ] consider multi v update in each iteration
