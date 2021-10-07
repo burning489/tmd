@@ -30,11 +30,6 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
 - result001 one circle in one phase, with energy along computed v
 - result002 double circles in one phase, with energy along computed v
 
-1. all zero phase (assumed to be global minimum, index=0)
-2. circle in one phase (index=1?TODO)
-3. double circles in one phase (index=4?TODO)
-4. splines (index=3?TODO)
-
 ## Remarks
 
 1. If i start upward search from assumed index-0 saddle, random orthogonal initial guess v will just do. But if i want to seach upward/downward from index-k saddle, downward search needs the computed k eigenvectors, while upward one needs to compute more eigenvectors orthogonal to the known k eigenvectors, i.e. construct a index m(m>k) unstable subspace v_m of x with negative eigenvalues, then mgs w.r.t. v_k. In all, i must know the correct index of the starting saddle to do the right perturbation.
