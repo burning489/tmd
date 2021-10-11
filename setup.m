@@ -14,7 +14,7 @@ E_XX_0 = -0.0299;
 E_YY_0 = 0.0374;
 THETA = [0, 2*pi/3, -2*pi/3];
 a = 2.4; b=8.4; c=6;
-ratio = [1, 1];
+ratio = [1, 0];
 n = N^2;
 % path management
 root_path = fileparts(mfilename('fullpath'));

@@ -17,9 +17,9 @@ options.subspace_scheme = "LOBPCG"; % LOBPCG
 options.mgs_eps = 1e-1; % tol for modified Gram-Schmidt
 
 % x = zeros(3*N*N, 1);
-x = load("results/result_004.mat").x;
+x = load("results/result_006.mat").x;
 [v, eig_vals] = gen_v(der_fcn, x, k, mode, options);
 
 fprintf("#index of unstable subspace:%d\n", sum(eig_vals<0));
 
-save('results/result_004.mat', 'x', 'v', 'eig_vals');
+save('results/result_006.mat', 'x', 'v', 'eig_vals');

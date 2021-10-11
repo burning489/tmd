@@ -5,7 +5,7 @@ setup;
 
 % output folder
 global runid;
-runid = 5;
+runid = 7;
 run_folder = sprintf(pwd+"/results/run%03d", runid);
 if exist(run_folder, "dir")
     system("rm -rf "+run_folder);
@@ -16,7 +16,7 @@ mkdir(sprintf(pwd+"/results/run%03d/data", runid));
 diary(run_folder+"/log.txt");
 
 %% params
-k = 1;
+k = 4;
 options.k0 = 0;
 options.k = k;
 options.perturb_eps = 1e1;
@@ -26,7 +26,7 @@ options.max_gen_iter = 1e2;
 options.stepsize = [1e-3 1e-3];
 options.l = 1e-6;
 options.seed = 1;
-options.r_tol = 1e-3;
+options.r_tol = 1e-2;
 options.orth_scheme = "mgs";
 options.step_scheme = "euler"; % Euler Scheme
 options.subspace_scheme = "LOBPCG"; % LOBPCG
@@ -49,15 +49,18 @@ figure();
 
 %% initial x and v0
 % x0 = zeros(3*n, 1);
-% x0 = load("results/result_001.mat").x;
-% v0 = load("results/result_001.mat").v;
-% for i=1:4
+% rng(0);
+% v0 = randn(3*n, k);
+% [v0, ~] = qr(v0, 0);
+% for i=1:k
 %     x0 = x0 + options.perturb_eps*v0(:,i);
 % end
-% v0 = v0(:,1:k);
-
-x0 = load("results/result_004.mat").x;
-v0 = load("results/result_004.mat").v;
+x0 = load("results/result_006.mat").x;
+v0 = load("results/result_006.mat").v;
+for i=4:5
+    x0 = x0 + options.perturb_eps*v0(:,i);
+end
+v0 = v0(:,1:4);
 
 % v0 = gen_v(der_fcn, x0, 10, mode, options);
 % v0 = randn(3*n, k);
