@@ -1,6 +1,6 @@
 %% global variables
 % model params
-global N max_iter a b c kappa Lx Ly stiffness theta s_0 e_0 kx ky EPS ratio root_path;
+global N max_iter a b c kappa Lx Ly stiffness theta s_0 e_0 kx ky EPS ratio root_path energy_fcn der_fcn;
 max_iter = 2e6;
 kappa = 0.005;
 syms theta;
@@ -22,6 +22,8 @@ addpath(genpath(root_path));
 if ~exist(root_path+"/results", 'dir')
     mkdir(root_path+"/results/")
 end
+energy_fcn = @energy;
+der_fcn = @derivative;
 
 %% Kronecker Delta function
 k_delta = @(x, y) double(x==y);

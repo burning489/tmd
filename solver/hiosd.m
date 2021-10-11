@@ -79,7 +79,7 @@ if nargin < 3
     k = 1; 
 end
 if nargin < 4
-    v0 = gen_v(grad, x0, k, options);
+    v0 = gen_v(grad, x0, k, 'smallestreal', options);
 end
 if ~isfield(options,'max_iter')
     max_iter = 1e3;
@@ -136,15 +136,8 @@ if ~isfield(options,'l')
 else
     l = options.l;
 end
-if ~isfield(options,'energy')
-    errID = "HiOSD:UnknownEnergyFunction";
-    msgtext = "HiOSD does not find energy function";
-    ME = MException(errID,msgtext);
-%     x = [], fval=[], exitflag=[], output=[];
-    throw(ME);
-else
-    energy = options.energy;
-end
+global energy_fcn
+energy = energy_fcn;
 
 %% initial point
 n_iter = 0;

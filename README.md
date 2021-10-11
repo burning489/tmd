@@ -30,6 +30,7 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
 - result001 one circle in one phase
 - result002 double circles in one phase
 - result003 a thin stick in one phase, index=0 with a degenerate eigenpair, got from upward search from all zero with k=1
+- result004 a thin wave in one phase, got from downward search from result001 with k=1, with another small negative eigenvalue -0.05, taken as zero
 
 ## Remarks
 
@@ -46,10 +47,11 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
   - all zero: index-0, any direction is ascent direction and eigenvalues are positive
   - single circle in one phase: index-4, with smallest positive eigenvalue 0.026, which is likely to be zero, energy decreases along the corresponding (4+1) eigenvectors, the 0.026 eigenpair might require discussion
   - double circles in one phase: index-8, requires more discussion, cannot see information from v
-- [ ] rerun the upward search from all zero with corrected switch sentence
-- [ ] with computed exact index of the results, try downward search
+- [x] rerun the upward search from all zero with corrected switch sentence
+- [x] with computed exact index of the results, try downward search
 - [ ] if the above not working, remove the elastic part and retry
 - [ ] consider multi v update in each iteration
+- [ ] introuduce BB schemes again
 
 
 ## Bugs

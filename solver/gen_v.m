@@ -1,12 +1,15 @@
-function [v, eig_vals] = gen_v(grad, x, k, options)
-% GEN_V Generate an orthonormal basis of the k-dimension unstable subspace of x, i.e. x is a local maximum on v, or v is span of the smallest k eigenvectors of hess(x).
+function [v, eig_vals] = gen_v(grad, x, k, mode, options)
+% GEN_V Generate an orthonormal basis of the k-dimension subspace of x, i.e. x is a local maximum on v, or v is span of the smallest or largest k eigenvectors of hess(x).
 % Parameters
 % ==============================
 % grad: function handle
-%       derivative of function.
+%       Derivative of function.
 % x: (n,1) double
+%    Input data.
 % k: integer
-%    Dimension of the unstable subspace, or the number of the smallest eigenparis to compute.
+%    Dimension of the unstable subspace, or the number of the smallest or largest eigenparis to compute.
+% mode: string
+%       Which eigenpairs to compute.
 % options: struct
 %          options.stepsize: 1*2 double, default = [1e-3 1e-3]
 %                            stepsize in iterations of x and v respectively.
@@ -132,7 +135,7 @@ for iter = 1:max_gen_iter
         % p <- (p'+p)/2 for symmetry
         p_sd = u_sd'*y_sd;
         p_sd = (p_sd + p_sd')/2;
-        [V, D] = eigs(p_sd , k, 'smallestreal');
+        [V, D] = eigs(p_sd , k, mode);
         v = u_sd*V;
     case "LOBPCG"
         % res <- H*v - v*diag(v'*H*v)
@@ -157,7 +160,7 @@ for iter = 1:max_gen_iter
         % p <- (p'+p)/2 for symmetry
         p_cg = u_cg'*y_cg;
         p_cg = (p_cg + p_cg')/2;
-        [V, D] = eigs(p_cg , k, 'smallestreal');
+        [V, D] = eigs(p_cg , k, mode);
         vm1 = v;
         v = u_cg*V;
         for i=1:k
