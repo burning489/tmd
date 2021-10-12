@@ -43,7 +43,7 @@ options.display = "iter"; % print info at every iteration
 log_options(options);
 
 % show figures on pc and not on server
-if ismac | ispc
+if ismac || ispc
     figure();
     figure();
 else

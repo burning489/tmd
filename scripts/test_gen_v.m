@@ -6,7 +6,7 @@ setup;
 mode = "smallestreal";
 k = 10;
 % gen_v params
-options.max_gen_iter = 1e3;
+options.max_gen_iter = 100;
 options.stepsize = [1e-3 1e-3];
 options.l = 1e-6;
 options.seed = 1;

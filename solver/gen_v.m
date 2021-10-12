@@ -190,8 +190,9 @@ for iter = 1:max_gen_iter
     for i=i:k
         hv(:,i) = dimer(grad, x, l, v(:,i));
     end
-    eigens = v'*hv;
-    residuals = hv - v*eigens;
+    % eigens = v'*hv;
+    % residuals = hv - v*eigens;
+    residuals = hv - v*D;
     norm_res = norm(residuals, 'fro');
     norm_hv = norm(hv, 'fro');
     fprintf("res:%f\thv:%f\trelative_percent:%f\n", norm_res, norm_hv, norm_res/norm_hv);
