@@ -1,6 +1,6 @@
 function save_options(options)
-global root_path runid kappa ratio;
-fileID = fopen(sprintf(root_path+"/results/run%03d/settings.json", runid), "w");
+global root_path timestamp kappa ratio;
+fileID = fopen(sprintf(root_path+"/results/r%s/settings.json", timestamp), "w");
 fprintf(fileID, "{\n");
 fprintf(fileID, "\t""start_index"": %d,\n", options.k0);
 fprintf(fileID, "\t""search_index"": %d,\n", options.k);

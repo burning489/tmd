@@ -1,5 +1,5 @@
 function stop = myoutput(x, optimValues, state)
-global N root_path runid;
+global N root_path timestamp;
 n = N*N;
 stop = false;
 switch state
@@ -25,10 +25,10 @@ if state == "init" || state == "done" || mod(optimValues.n_iter, 1e2) == 0
     imagesc(reshape(x(2*n+1:3*n),N,N));
     colorbar;
     axis square;
-    saveas(2, sprintf(root_path+"/results/run%03d/plot/phase_%d.png", runid, optimValues.n_iter));
+    saveas(2, sprintf(root_path+"/results/r%s/plot/phase_%d.png", timestamp, optimValues.n_iter));
 %     save x and v
     x = optimValues.x;
     v = optimValues.v;
-    save(sprintf(root_path+"/results/run%03d/data/xv_%d.mat", runid, optimValues.n_iter), "x", "v");
+    save(sprintf(root_path+"/results/r%s/data/xv_%d.mat", timestamp, optimValues.n_iter), "x", "v");
 end
 end

@@ -57,6 +57,5 @@ following without elastic part
 - [ ] consider multi v update in each iteration
 - [ ] introuduce BB schemes again
 
-
 ## Bugs
-- [ ] LOBPSD and LOBPCG in hiosd use wrong parameter for eigs, should replace SM with smllestreal
+- [x] LOBPSD and LOBPCG in hiosd use wrong parameter for eigs, should replace SM with smllestreal

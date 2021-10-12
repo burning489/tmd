@@ -14,7 +14,7 @@ function plot_fval(f_vals, opt_values)
 %             opt_values.e_elas: double
 %                                Elastic energy at xn.
 % See also optimplotfval
-global root_path runid e_bulk e_inter e_elas
+global root_path timestamp e_bulk e_inter e_elas
 if opt_values.n_iter == 0
     set(0, 'CurrentFigure', 1);
     plotfval = plot(0, f_vals, 0, e_bulk, 0, e_inter, 0, e_elas);
@@ -51,6 +51,6 @@ else
     drawnow
 end
 if mod(opt_values.n_iter, 1000) == 0
-    saveas(1, sprintf(root_path+"/results/run%03d/energy.png", runid));
+    saveas(1, sprintf(root_path+"/results/r%s/energy.png", timestamp));
 end
 end

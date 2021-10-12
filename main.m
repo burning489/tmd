@@ -4,14 +4,14 @@ clear, close all
 setup;
 
 % output folder
-global runid;
-runid = 7;
-run_folder = sprintf(pwd+"/results/run%03d", runid);
+global timestamp;
+timestamp = datestr(now,'yymmdd-HHMMSS'); % e.g. 211012-102728 for 12th, October, 2021, 10:27:38
+run_folder = sprintf(pwd+"/results/r%s", timestamp);
 if exist(run_folder, "dir")
     system("rm -rf "+run_folder);
 end
-mkdir(sprintf(pwd+"/results/run%03d/plot", runid));
-mkdir(sprintf(pwd+"/results/run%03d/data", runid));
+mkdir(sprintf(pwd+"/results/r%s/plot", timestamp));
+mkdir(sprintf(pwd+"/results/r%s/data", timestamp));
 
 diary(run_folder+"/log.txt");
 
@@ -76,7 +76,7 @@ v0 = v0(:,1:4);
 
 %% HiOSD
 [x, fval, exitflag, output] = hiosd(der_fcn, x0, k, v0, options);
-save(sprintf(root_path+"/results/run%03d/results.mat", runid));
+save(sprintf(root_path+"/results/r%s/results.mat", timestamp));
 output.message
 
 diary off;

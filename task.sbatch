@@ -14,4 +14,4 @@ cd $SLURM_SUBMIT_DIR
 
 module load matlab/R2020a
 
-matlab -nosplash -nodisplay -nodesktop -r "global runid; runid = 1; run('main.m')"
+matlab -nosplash -nodisplay -nodesktop -r "run('main.m')"
