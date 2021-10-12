@@ -1,9 +1,8 @@
 %% global variables
 % model params
-global N max_iter a b c kappa Lx Ly stiffness theta s_0 e_0 kx ky EPS ratio root_path energy_fcn der_fcn;
-max_iter = 2e6;
-kappa = 0.005;
+global N a b c kappa Lx Ly stiffness theta s_0 e_0 kx ky EPS ratio root_path energy_fcn der_fcn;
 syms theta;
+kappa = 0.005;
 EPS = 1e-10;
 N = 64;
 Lx = 1;
@@ -16,7 +15,8 @@ THETA = [0, 2*pi/3, -2*pi/3];
 a = 2.4; b=8.4; c=6;
 ratio = [1, 0];
 n = N^2;
-% path management
+
+% chore params
 root_path = fileparts(mfilename('fullpath'));
 addpath(genpath(root_path));
 if ~exist(root_path+"/results", 'dir')

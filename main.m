@@ -1,6 +1,6 @@
 clear, close all
 
-% setup
+% setup global params of physical model and chore params(path management and user-defined function handles)
 setup;
 
 % output folder
@@ -34,7 +34,7 @@ options.orth_scheme = "mgs";
 options.step_scheme = "euler";
 options.subspace_scheme = "LOBPCG";
 % solver params
-options.max_iter = max_iter;
+options.max_iter = 2e6;
 options.g_tol = 1e-2; % tol for derivative
 options.output_fcn = @myoutput;
 options.plot_fcn = @plot_fval;
