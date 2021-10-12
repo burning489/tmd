@@ -225,7 +225,7 @@ for n_iter = 1:max_iter
             end
             u_cg = [vn, vnm1, res];
             u_cg = mgs2(u_cg, k, mgs_eps);
-            test_orth(u_cg);
+            % test_orth(u_cg);
             y_cg = zeros(size(u_cg));
             k_ = size(u_cg, 2);
             for i=1:k_
@@ -250,7 +250,7 @@ for n_iter = 1:max_iter
             end
         otherwise
             errID = "SOLVER:UnknownSubspaceScheme";
-            msgtext = "Invalid subspace_scheme";
+            msgtext = "solver receive invalid subspace_scheme";
             ME = MException(errID,msgtext);
             throw(ME);
     end
@@ -268,7 +268,7 @@ for n_iter = 1:max_iter
         output.message = sprintf("Function value exceeds 1e4.\n");
         exitflag = 0;
         if display == "notify"
-            fprintf("solver does not converge. " + output.message);
+            fprintf("Solver does not converge. " + output.message);
         end
         break;
     end
@@ -297,7 +297,7 @@ for n_iter = 1:max_iter
         if stop
             exitflag = -1;
             if display == "notify"
-                output.message = "solver stopped by output function.\n";
+                output.message = "Solver stopped by output function.\n";
                 fprintf(output.message);
             end
             break;
@@ -305,9 +305,9 @@ for n_iter = 1:max_iter
     end
     if display == "iter"
         if exist("k_", "var")
-            fprintf("#iter=%d\tfval=%e\t der_norm=%e\t #dim_v=%d\n", n_iter, en, mynorm(fn, norm_scheme), k_);
+            fprintf("#iter=%d\tfval=%e\t gnrm=%e\t #dim_u=%d\n", n_iter, en, mynorm(fn, norm_scheme), k_);
         else
-            fprintf("#iter=%d\tfval=%e\t der_norm=%e\n", n_iter, en, mynorm(fn, norm_scheme));
+            fprintf("#iter=%d\tfval=%e\t gnrm=%e\n", n_iter, en, mynorm(fn, norm_scheme));
         end
     end
 end
@@ -319,14 +319,14 @@ if n_iter == max_iter
     exitflag = 0;
     output.message = sprintf("Reach Max Iterations.\n");
     if display == "notify"
-        fprintf("solver does not converge. " + output.message);
+        fprintf("Solver does not converge. " + output.message);
     end
 end
 output.iterations = n_iter;
 output.v = vn;
 
 if display == "final"
-    fprintf("#iter=%d\tfval=%e\t der_norm=%e\n", n_iter, fval, mynorm(grad(x), norm_scheme));
+    fprintf("#iter=%d\tfval=%e\t gnrm=%e\n", n_iter, fval, mynorm(grad(x), norm_scheme));
 end
 
 end

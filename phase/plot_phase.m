@@ -2,7 +2,11 @@ function plot_phase(x)
 % PLOT_PHASE Plot phase graph for (3*N*N,1) x.
 	global N;
 	n = N*N;
-	figure;
+	if ismac | ispc
+		figure;
+	else
+		figure("Visible", "off");
+	end	
 	subplot(1,3,1);
 	imagesc(reshape(x(1:n),N,N));
 	colorbar;

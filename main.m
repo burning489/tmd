@@ -39,7 +39,7 @@ options.g_tol = 1e-2; % tol for derivative
 options.output_fcn = @myoutput;
 options.plot_fcn = @plot_fval;
 options.display = "iter"; % print info at every iteration
-% save params
+% log params
 log_options(options);
 
 % show figures on pc and not on server
@@ -51,25 +51,27 @@ else
     figure("Visible", "off");
 end
 
-% initial x and v0
+% init x0 and v0
 % x0 = zeros(3*n, 1);
 % rng(0);
 % v0 = randn(3*n, k);
 % [v0, ~] = qr(v0, 0);
-% for i=1:k
-%     x0 = x0 + options.perturb_eps*v0(:,i);
-% end
+% v0 = gen_v(der_fcn, x0, 10, mode, options);
+% v0 = randn(3*n, k);
+% [v0, ~] = qr(v0, 0);
 x0 = load("results/result_006.mat").x;
 v0 = load("results/result_006.mat").v;
+plot_phase(x0);
+saveas(3, sprintf(root_path+"/results/r%s/phase_0.png", timestamp));
+close(3);
+
+% perturb
 for i=4:5
     x0 = x0 + options.perturb_eps*v0(:,i);
 end
 v0 = v0(:,1:4);
 
 % mode = "largestreal";
-% v0 = gen_v(der_fcn, x0, 10, mode, options);
-% v0 = randn(3*n, k);
-% [v0, ~] = qr(v0, 0);
 % for i=1:length(options.perturb_index)
 %     x0 = x0 + options.perturb_eps*v0(:,options.perturb_index(i));
 % end
@@ -80,7 +82,11 @@ v0 = v0(:,1:4);
 
 % solver
 [x, fval, exitflag, output] = solver(der_fcn, x0, k, v0, options);
-save(sprintf(root_path+"/results/r%s/results.mat", timestamp));
+
+% postprocess
+v = output.v;
+save(sprintf(root_path+"/results/r%s/results.mat", timestamp), 'x', 'v', 'x0', 'v0', 'options');
+savefig(1, sprintf(root_path+"/results/r%s/energy.fig", timestamp));
 output.message
 
 diary off;
