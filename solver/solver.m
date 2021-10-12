@@ -1,5 +1,5 @@
-function [x, fval, exitflag, output] = hiosd(grad, x0, k, v0, options, varargin)
-% HIOSD High-index optimization-based shrinking dimer method for finding high-index saddle points. 
+function [x, fval, exitflag, output] = solver(grad, x0, k, v0, options, varargin)
+% solver High-index optimization-based shrinking dimer method for finding high-index saddle points.
 % Parameters
 % ==============================
 % grad: function handle
@@ -28,6 +28,11 @@ function [x, fval, exitflag, output] = hiosd(grad, x0, k, v0, options, varargin)
 %          options.output_fcn: function handle, default=[]
 %                              Specify one or more user-defined functions that an optimization function calls at each iteration. Pass a user defined function handle.
 %                              Return true or false to determine whether to stop the progress.
+%          options.norm_scheme: string, default="Inf"
+%                               Which norm to use.
+%                               "Inf": infinity norm
+%                               "1": 1-norm divided by n
+%                               "2": 2-norm divided by sqrt(n)
 %          options.step_scheme: string, default="euler"
 %                               Stepsize scheme in iterations of x and v.
 %                               "euler" Euler scheme with options.stepsize
@@ -58,7 +63,7 @@ function [x, fval, exitflag, output] = hiosd(grad, x0, k, v0, options, varargin)
 % fval: double
 %       Objective function value at the solution, returned as a real number.
 % exitflag: integer
-%           Reason HIOSD stopped, returned as an integer.
+%           Reason solver stopped, returned as an integer.
 %           -1 Stopped by options.output_fcn.
 %           0 Number of iterations exceeded options.max_iter.
 %           1 The function converged to a solution x.
@@ -76,7 +81,7 @@ if ~exist('options','var')
     options = [];
 end
 if nargin < 3
-    k = 1; 
+    k = 1;
 end
 if nargin < 4
     v0 = gen_v(grad, x0, k, 'smallestreal', options);
@@ -110,6 +115,11 @@ if ~isfield(options,'output_fcn')
     output_fcn = [];
 else
     output_fcn = options.output_fcn;
+end
+if ~isfield(options,'norm_scheme')
+    norm_scheme = "Inf";
+else
+    norm_scheme = options.norm_scheme;
 end
 if ~isfield(options,'step_scheme')
     step_scheme = "euler";
@@ -156,12 +166,12 @@ end
 %% searching
 for n_iter = 1:max_iter
     % check if first order converged
-    if mynorm(fn) < g_tol
+    if mynorm(fn, norm_scheme) < g_tol
         output.message = sprintf("Meet First-Order Optimality Tolerance.\n");
         exitflag = 1;
         break;
     end
-
+    
     % update x
     % gn = fn - 2*sum_{i=1}^{k} <vni, fn>*vni, with vni = vn(:,i), with fn = -grad(xn).
     gn = fn;
@@ -172,7 +182,7 @@ for n_iter = 1:max_iter
     if step_scheme == "euler"
         xnp1 = xn + stepsize(1)*gn;
     end
-
+    
     % update v
     vnp1 = zeros(size(vn));
     switch subspace_scheme
@@ -239,47 +249,38 @@ for n_iter = 1:max_iter
                 end
             end
         otherwise
-            errID = "HiOSD:UnknownSubspaceScheme";
+            errID = "SOLVER:UnknownSubspaceScheme";
             msgtext = "Invalid subspace_scheme";
             ME = MException(errID,msgtext);
             throw(ME);
     end
-
+    
     % orthnormalize
-    if orth_scheme == "mgs"
-        vnp1 = mgs1(vnp1);
-    elseif orth_scheme == "qr"
-        [vnp1, ~] = qr(vnp1, 0);
-    else
-        errID = "GEN_V:UnknownOrthScheme";
-        msgtext = "gen_v receive wrong orth_scheme";
-        ME = MException(errID,msgtext);
-        throw(ME);
-    end
-
+    vnp1 = myorth(vnp1, orth_scheme);
+    
     xn = xnp1;
     vn = vnp1;
     fn = -grad(xn);
     en = energy(xn);
-
+    
     % check if energy exceeds upper bound
     if en > 1e4
         output.message = sprintf("Function value exceeds 1e4.\n");
         exitflag = 0;
         if display == "notify"
-            fprintf("HiOSD does not converge. " + output.message);
+            fprintf("solver does not converge. " + output.message);
         end
         break;
     end
-
-    % plot energy functions 
+    
+    % plot energy functions
     if ~isempty(plot_fcn)
         opt_values.n_iter = n_iter;
         opt_values.fval = en;
         plot_fcn(en, opt_values);
     end
     
-    % user defined output function 
+    % user defined output function
     if ~isempty(output_fcn)
         opt_values.n_iter = n_iter;
         opt_values.fval = en;
@@ -296,7 +297,7 @@ for n_iter = 1:max_iter
         if stop
             exitflag = -1;
             if display == "notify"
-                output.message = "HiOSD stopped by output function.\n";
+                output.message = "solver stopped by output function.\n";
                 fprintf(output.message);
             end
             break;
@@ -304,9 +305,9 @@ for n_iter = 1:max_iter
     end
     if display == "iter"
         if exist("k_", "var")
-            fprintf("#iter=%d\tfunc_value=%e\t der_norm=%e\t #dim_v=%d\n", n_iter, en, mynorm(fn), k_);
+            fprintf("#iter=%d\tfval=%e\t der_norm=%e\t #dim_v=%d\n", n_iter, en, mynorm(fn, norm_scheme), k_);
         else
-            fprintf("#iter=%d\tfunc_value=%e\t der_norm=%e\n", n_iter, en, mynorm(fn));
+            fprintf("#iter=%d\tfval=%e\t der_norm=%e\n", n_iter, en, mynorm(fn, norm_scheme));
         end
     end
 end
@@ -318,14 +319,14 @@ if n_iter == max_iter
     exitflag = 0;
     output.message = sprintf("Reach Max Iterations.\n");
     if display == "notify"
-        fprintf("HiOSD does not converge. " + output.message);
+        fprintf("solver does not converge. " + output.message);
     end
 end
 output.iterations = n_iter;
 output.v = vn;
 
 if display == "final"
-    fprintf("#iter=%d\tfunc_value=%e\t der_norm=%e\n", n_iter, fval, mynorm(grad(x)));
+    fprintf("#iter=%d\tfval=%e\t der_norm=%e\n", n_iter, fval, mynorm(grad(x), norm_scheme));
 end
 
 end

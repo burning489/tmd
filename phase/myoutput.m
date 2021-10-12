@@ -2,15 +2,8 @@ function stop = myoutput(x, optimValues, state)
 global N root_path timestamp;
 n = N*N;
 stop = false;
-switch state
-    case 'init'
-        
-    case 'iter'
-      
-    case 'done'
-end
 if state == "init" || state == "done" || mod(optimValues.n_iter, 1e2) == 0
-%     phase plots
+    % plots
     set(0, 'CurrentFigure', 2);
     subplot(1,3,1);
     imagesc(reshape(x(1:n),N,N));
@@ -25,10 +18,10 @@ if state == "init" || state == "done" || mod(optimValues.n_iter, 1e2) == 0
     imagesc(reshape(x(2*n+1:3*n),N,N));
     colorbar;
     axis square;
-    saveas(2, sprintf(root_path+"/results/r%s/plot/phase_%d.png", timestamp, optimValues.n_iter));
-%     save x and v
+    saveas(2, sprintf(root_path+"/results/r%s/plots/phase_%d.png", timestamp, optimValues.n_iter));
+    % chcekpoints
     x = optimValues.x;
     v = optimValues.v;
-    save(sprintf(root_path+"/results/r%s/data/xv_%d.mat", timestamp, optimValues.n_iter), "x", "v");
+    save(sprintf(root_path+"/results/r%s/checkpoints/xv_%d.mat", timestamp, optimValues.n_iter), "x", "v");
 end
 end

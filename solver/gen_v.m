@@ -183,16 +183,7 @@ for iter = 1:max_gen_iter
     end
 
     % orthonormalize
-    if orth_scheme == "mgs"
-        v = mgs1(v);
-    elseif orth_scheme == "qr"
-        [v, ~] = qr(v, 0);
-    else
-        errID = "GEN_V:UnknownOrthScheme";
-        msgtext = "gen_v receive wrong orth_scheme";
-        ME = MException(errID,msgtext);
-        throw(ME);
-    end
+    v = myorth(v, orth_scheme);
 
     % error
     hv = zeros(size(v));

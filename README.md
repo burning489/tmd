@@ -58,4 +58,4 @@ following without elastic part
 - [ ] introuduce BB schemes again
 
 ## Bugs
-- [x] LOBPSD and LOBPCG in hiosd use wrong parameter for eigs, should replace SM with smllestreal
+- [x] LOBPSD and LOBPCG in solver use wrong parameter for eigs, should replace SM with smllestreal

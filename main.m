@@ -1,6 +1,6 @@
 clear, close all
 
-%% setup
+% setup
 setup;
 
 % output folder
@@ -10,15 +10,16 @@ run_folder = sprintf(pwd+"/results/r%s", timestamp);
 if exist(run_folder, "dir")
     system("rm -rf "+run_folder);
 end
-mkdir(sprintf(pwd+"/results/r%s/plot", timestamp));
-mkdir(sprintf(pwd+"/results/r%s/data", timestamp));
+mkdir(sprintf(pwd+"/results/r%s/plots", timestamp));
+mkdir(sprintf(pwd+"/results/r%s/checkpoints", timestamp));
 
+% logging
 diary(run_folder+"/log.txt");
 
-%% params
+% params
 k = 4;
-options.k0 = 0;
-options.k = k;
+options.k0 = 0; % index of start point
+options.k = k; % index of target
 options.perturb_eps = 1e1;
 options.perturb_index = 1:k;
 % gen_v params
@@ -26,28 +27,31 @@ options.max_gen_iter = 1e2;
 options.stepsize = [1e-3 1e-3];
 options.l = 1e-6;
 options.seed = 1;
-options.r_tol = 1e-2;
+options.r_tol = 1e-2; % tol for residuals
+options.mgs_eps = 1e-1; % neglect tol for modified Gram-Schmidt
+options.norm_scheme = "Inf";
 options.orth_scheme = "mgs";
-options.step_scheme = "euler"; % Euler Scheme
-options.subspace_scheme = "LOBPCG"; % LOBPCG
-options.mgs_eps = 1e-1; % tol for modified Gram-Schmidt
-% HiOSD params
+options.step_scheme = "euler";
+options.subspace_scheme = "LOBPCG";
+% solver params
 options.max_iter = max_iter;
-options.step_scheme = "euler"; % Euler Scheme
 options.g_tol = 1e-2; % tol for derivative
 options.output_fcn = @myoutput;
 options.plot_fcn = @plot_fval;
-options.display = "iter";
+options.display = "iter"; % print info at every iteration
 % save params
-save_options(options);
-mode = "largestreal";
+log_options(options);
 
-% figure("Visible", "off"); % for server use
-% figure("Visible", "off");
-figure();
-figure();
+% show figures on pc and not on server
+if ismac | ispc
+    figure();
+    figure();
+else
+    figure("Visible", "off");
+    figure("Visible", "off");
+end
 
-%% initial x and v0
+% initial x and v0
 % x0 = zeros(3*n, 1);
 % rng(0);
 % v0 = randn(3*n, k);
@@ -62,6 +66,7 @@ for i=4:5
 end
 v0 = v0(:,1:4);
 
+% mode = "largestreal";
 % v0 = gen_v(der_fcn, x0, 10, mode, options);
 % v0 = randn(3*n, k);
 % [v0, ~] = qr(v0, 0);
@@ -73,9 +78,8 @@ v0 = v0(:,1:4);
 % end
 % v0 = v0(:,1:k);
 
-
-%% HiOSD
-[x, fval, exitflag, output] = hiosd(der_fcn, x0, k, v0, options);
+% solver
+[x, fval, exitflag, output] = solver(der_fcn, x0, k, v0, options);
 save(sprintf(root_path+"/results/r%s/results.mat", timestamp));
 output.message
 
