@@ -4,11 +4,11 @@ clean; setup;
 mode = "smallestreal";
 k = 10;
 % gen_v params
-options.max_gen_iter = 200;
+options.max_gen_iter = 10000;
 options.stepsize = [1e-3 1e-3];
 options.l = 1e-6;
 options.seed = 1;
-options.r_tol = 1e-2;
+options.r_tol = 1e-3;
 options.orth_scheme = "mgs";
 options.step_scheme = "euler"; 
 options.subspace_scheme = "LOBPCG"; 
