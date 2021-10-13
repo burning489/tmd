@@ -192,11 +192,17 @@ for iter = 1:max_gen_iter
         hv(:,i) = dimer(grad, x, l, v(:,i));
     end
 
+    if subspace_scheme == "rayleigh" || subspace_scheme == "power"
+        p = v'*hv;
+        p = (p+p')/2;
+        [V, D] = eigs(p, k, mode);
+        for i=1:k
+            fprintf("%f\t", D(i,i));
+        end
+        fprintf("\n");
+    end
+    
     residuals = hv - v*D;
-    % for i=1:k
-    %     fprintf("%f\t", norm(residuals(:,i))/norm(hv(:,i)));
-    % end
-    % fprintf("\n");
     norm_res = norm(residuals, 'fro');
     norm_hv = norm(hv, 'fro');
     fprintf("res:%f\thv:%f\trelative_percent:%f\n", norm_res, norm_hv, norm_res/norm_hv);

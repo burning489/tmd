@@ -62,6 +62,9 @@ following without elastic part
 - [x] if the above not working, remove the elastic part and retry
 - [x] consider multi v update in each iteration
 - [ ] introuduce BB step scheme again ??? this means reuse rayleigh quotient iteration, which is bad for now
+- [ ] retry rayleigh quotient iteration and power method
+- [ ] decouple gen_v from solver
+- [x] understand LOBPSD/LOBPCG: notice current and previous approximation might be linear dependent.
 
 ## Bugs
 - [x] LOBPSD and LOBPCG in solver use wrong parameter for eigs, should replace SM with smllestreal
