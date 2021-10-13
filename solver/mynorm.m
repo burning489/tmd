@@ -1,4 +1,5 @@
 function nrm = mynorm(x, norm_scheme)
+% MYNORM 1, 2 or infinity norm for vector
 switch norm_scheme
     case "Inf"
         nrm = norm(x, "Inf");

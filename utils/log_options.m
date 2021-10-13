@@ -15,7 +15,7 @@ end
 fprintf(fileID, "\n\t],\n");
 % gen_v params
 fprintf(fileID, "\t""max_gen_iter"": %d,\n", options.max_gen_iter);
-fprintf(fileID, "\t""stepsize"": [%f %f],\n", options.stepsize);
+fprintf(fileID, "\t""stepsize"": [%f, %f],\n", options.stepsize);
 fprintf(fileID, "\t""l"": %f,\n", options.l);
 fprintf(fileID, "\t""rng_seed"": %d,\n", options.seed);
 fprintf(fileID, "\t""r_tol"": %f,\n", options.r_tol);
@@ -26,10 +26,11 @@ fprintf(fileID, "\t""step_scheme"": ""%s"",\n", options.step_scheme);
 fprintf(fileID, "\t""subspace_scheme"": ""%s"",\n", options.subspace_scheme);
 % solver params
 fprintf(fileID, "\t""max_iter"": %d,\n", options.max_iter);
+fprintf(fileID, "\t""v_iter"": %d,\n", options.v_iter);
 fprintf(fileID, "\t""g_tol"": %f,\n", options.g_tol);
 % physical model params
-fprintf(fileID, "\t""kappa"": %d\n", kappa);
-fprintf(fileID, "\t""ratio"": [%f %f],\n", ratio(1), ratio(2));
+fprintf(fileID, "\t""kappa"": %d,\n", kappa);
+fprintf(fileID, "\t""ratio"": [%f, %f],\n", ratio(1), ratio(2));
 
 fprintf(fileID, "}");
 fclose(fileID);

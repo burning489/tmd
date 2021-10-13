@@ -1,4 +1,5 @@
 function [x, fval, exitflag, output] = steepest(func, x0, options, varargin)
+% STEEPEST Steepest descent, abandoned for now
 if ~exist('options','var')
     options = [];
 end

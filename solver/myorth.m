@@ -1,4 +1,5 @@
 function v = myorth(v, orth_scheme)
+% MYORTH QR or modified Gram Schmidt to orthogonormalize matrix 
     switch orth_scheme
     case "mgs"
         v = mgs1(v);

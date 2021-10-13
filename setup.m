@@ -1,4 +1,5 @@
-% physical model params
+% Set up physical model configurations
+
 global N a b c kappa Lx Ly stiffness theta s_0 e_0 kx ky EPS ratio root_path energy_fcn der_fcn;
 syms theta;
 kappa = 0.005;

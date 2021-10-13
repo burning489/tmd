@@ -1,6 +1,6 @@
 function plot_fval(f_vals, opt_values)
 % PLOT_FVAL Plot energy function values while the algorithm executes.
-% Parameters
+% Input
 % ==============================
 % f_vals: double
 %         Total energy function value at xn.

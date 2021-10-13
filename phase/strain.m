@@ -1,6 +1,6 @@
 function [exx, exy, eyy] = strain(eta)
 % STRAIN Compute strain for phase parameter (3*N*N,1) eta.
-% model parameters
+% model Input
 global N Lx Ly stiffness s_0 kx ky;
 
 % displacement

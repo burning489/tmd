@@ -8,9 +8,14 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
 2. phase: energy function related
 3. utils: auxiliary functions
 4. scripts: test scripts
-  - test_elastic: test normalization on elastic energy sin(2\*pi*(2\*x+y)), draw 4*3 subplots to illustrate, every line contains strain on xx, xy and yy at different configurations: Lx,Ly=1,N=64; Lx,Ly=1,N=128; Lx,Ly=0.5,N=64 and Lx,Ly=1, N=128 constrained at the [0,0.5]\*[0,0.5] square.
+  - test_elastic: test normalization on elastic energy sin(2\*pi*(2\*x+y)), draw 4*3 subplots to illustrate, every line contains strain on xx, xy and yy at different configurations:
+    - Lx,Ly=1,N=64
+    - Lx,Ly=1,N=128, refine mesh
+    - Lx,Ly=0.5,N=64, restrict area
+    - Lx,Ly=1, N=128 constrained at the [0,0.5]\*[0,0.5] square, to compare with the above
   - test_gen_v: generate v for some x with some k
   - test_plot_v: plot energy surface around x along any 2 basis from v
+  - test_v_mono: test monotonicity of energy function at x along v
 
 ## Implemention
 
@@ -18,7 +23,7 @@ This repository contains MATLAB code implementing High-Index based Dimer method 
   - adopt dimer method to approximate hessian of energy, denote as H, instead of explicitly calculating H, approxmate H\*v = [f'(x+lv) - f'(x-lv)] / (2\*l) to obtian the information of H along v direction. Thus, the method is matrix-free, which is useful in approximating eigenvectors.
   - implement 4 methods to approximate (smallest or largest) eigenpairs of H:
     - Simultaneous Rayleigh quotient iteration, requires a stepsize for iteration, currently not working so well on my case, might test again later.
-    - Power iteration on I - beta\*H, with beta small enough, approximate the smallest eigenpairs. Change - to + for LM case.
+    - Power iteration on I - beta\*H, with beta small enough, approximate the smallest eigenpairs. Change - to + for largest case.
     - LOBPSD and LOBPCG. Preconditioner set as identity. Subroutine not understood yet(TODO).
   - use modified Gram-Schmidt process(default) or MATLAB default QR to do the orthonomalizaion
 
@@ -53,9 +58,10 @@ following without elastic part
   - double circles in one phase: index-8, requires more discussion, cannot see information from v
 - [x] rerun the upward search from all zero with corrected switch sentence
 - [x] with computed exact index of the results, try downward search
-- [ ] if the above not working, remove the elastic part and retry
-- [ ] consider multi v update in each iteration
-- [ ] introuduce BB schemes again
+- [x] improve output structure， better for reproduce
+- [x] if the above not working, remove the elastic part and retry
+- [x] consider multi v update in each iteration
+- [ ] introuduce BB step scheme again ??? this means reuse rayleigh quotient iteration, which is bad for now
 
 ## Bugs
 - [x] LOBPSD and LOBPCG in solver use wrong parameter for eigs, should replace SM with smllestreal

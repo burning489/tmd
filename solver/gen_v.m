@@ -1,6 +1,7 @@
 function [v, eig_vals] = gen_v(grad, x, k, mode, options)
-% GEN_V Generate an orthonormal basis of the k-dimension subspace of x, i.e. x is a local maximum on v, or v is span of the smallest or largest k eigenvectors of hess(x).
-% Parameters
+% GEN_V Generate an orthonormal basis of some k-dimension subspace of x
+% v is span of the smallest or largest k eigenvectors of hess(x).
+% Input
 % ==============================
 % grad: function handle
 %       Derivative of function.
@@ -37,7 +38,7 @@ function [v, eig_vals] = gen_v(grad, x, k, mode, options)
 %                               Stepsize scheme in iterations of x and v.
 %                               "euler": Euler scheme with options.stepsize.
 %                               other schemes: TODO
-% Returns
+% Output
 % ==============================
 % v: (n,k) double
 %    Unstable subspace.
@@ -45,7 +46,7 @@ function [v, eig_vals] = gen_v(grad, x, k, mode, options)
 %           Rayleigh quotient corresponding to v.
 % see also dimer, mgs1, mgs2
 
-%% prepare parameters
+%% prepare Input
 if ~exist('options','var')
     options = []; 
 end

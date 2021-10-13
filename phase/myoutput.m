@@ -2,7 +2,7 @@ function stop = myoutput(x, optimValues, state)
 global N root_path timestamp;
 n = N*N;
 stop = false;
-if state == "init" || state == "done" || mod(optimValues.n_iter, 1e3) == 0
+if state == "init" || state == "done" || mod(optimValues.n_iter, 1e2) == 0
     % plots
     set(0, 'CurrentFigure', 2);
     subplot(1,3,1);
