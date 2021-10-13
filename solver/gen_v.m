@@ -196,6 +196,11 @@ for iter = 1:max_gen_iter
         p = v'*hv;
         p = (p+p')/2;
         [V, D] = eigs(p, k, mode);
+        v = v*V;
+        v = myorth(v, orth_scheme);
+        for i=1:k
+            hv(:,i) = dimer(grad, x, l, v(:,i));
+        end
         for i=1:k
             fprintf("%f\t", D(i,i));
         end
