@@ -107,11 +107,16 @@ eig_vals = [];
 for iter = 1:max_gen_iter
     switch subspace_scheme
     case "power"
+        if mode == "largestreal"
+            sgn = 1;
+        elseif mode == "smallestreal"
+            sgn = -1;
+        end
         % v <- (I - beta*H)*v
         % vi <- vi - beta*H*vi
         for i=1:k
             vi = v(:,i);
-            v(:,i) = vi - stepsize(2)*dimer(grad, x, l, vi);
+            v(:,i) = vi + sgn*stepsize(2)*dimer(grad, x, l, vi);
         end
     case "LOBPSD"
         % res <- H*v - v*diag(v'*H*v)
@@ -168,7 +173,12 @@ for iter = 1:max_gen_iter
             fprintf("%f\t", D(i,i));
         end
         fprintf("\n");
-    case "rayleigh" % simultaneously (not suggested, numerically stable)
+    case "rayleigh" % simultaneously rayleigh quotient
+        if mode == "largestreal"
+            sgn = 1;
+        elseif mode == "smallestreal"
+            sgn = -1;
+        end
         vm1 = v;
         for i=1:k
             vi = vm1(:,i);
@@ -178,7 +188,7 @@ for iter = 1:max_gen_iter
                di = di + 2*dot(vm1(:,j), ui)*vm1(:,j); 
             end
             if step_scheme == "euler"
-                v(:,i) = vi + stepsize(2)*di;
+                v(:,i) = vi - sgn*stepsize(2)*di;
             end
         end
     end

@@ -61,8 +61,10 @@ following without elastic part
 - [x] improve output structure， better for reproduce
 - [x] if the above not working, remove the elastic part and retry
 - [x] consider multi v update in each iteration
-- [ ] introuduce BB step scheme again ??? this means reuse rayleigh quotient iteration, which is bad for now
+- [ ] introuduce BB step scheme for x iteration again 
 - [ ] retry rayleigh quotient iteration and power method
+  - [x] add eigenvalue
+  - [ ] add largestreal case
 - [ ] decouple gen_v from solver
 - [x] understand LOBPSD/LOBPCG: notice current and previous approximation might be linear dependent.
 

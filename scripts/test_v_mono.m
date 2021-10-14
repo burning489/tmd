@@ -1,6 +1,6 @@
 clean;
 load('results/result_006.mat');
-t = linspace(-1, 1, 1000);
+t = linspace(-10, 10, 1000);
 f = zeros(size(t));
 fx = energy(x);
 for i=1:size(v,2)
