@@ -46,9 +46,14 @@ following without elastic part
 1. If i start upward search from assumed index-0 saddle, random orthogonal initial guess v will just do. But if i want to seach upward/downward from index-k saddle, downward search needs the computed k eigenvectors, while upward one needs to compute more eigenvectors orthogonal to the known k eigenvectors, i.e. construct a index m(m>k) unstable subspace v_m of x with negative eigenvalues, then mgs w.r.t. v_k. In all, i must know the correct index of the starting saddle to do the right perturbation.
 
 2. might need to check the influence of the dimer length
+  update: 1e-6 will just do
 
 3. descent or ascent along v might not be a good standard, now i plot surface along any two basis from v, energy along v1 and v2 seems flat but other v seem a basin
+  update: now i use plots for each v and it works
 
+4. current LOBPCG actually does not differ from LOBSD much because previous and current approximation of eigenvectors might be linear dependent, need to check the original LOBPCG for a more stable version if i really want the conjugacy
+
+5. now i have checked power and rayleigh on allzero and single circle, it turns out that allzero is actually a index-0 saddle and single circle might be a degenerated index-0 saddle
 ## TODO
 
 - [x] test on elastic
@@ -62,9 +67,7 @@ following without elastic part
 - [x] if the above not working, remove the elastic part and retry
 - [x] consider multi v update in each iteration
 - [ ] introuduce BB step scheme for x iteration again 
-- [ ] retry rayleigh quotient iteration and power method
-  - [x] add eigenvalue
-  - [ ] add largestreal case
+- [x] retry rayleigh quotient iteration and power method, add eigenvalue computing and largestreal case
 - [ ] decouple gen_v from solver
 - [x] understand LOBPSD/LOBPCG: notice current and previous approximation might be linear dependent.
 

@@ -1,6 +1,6 @@
-function [v, eig_vals] = gen_v(grad, x, k, mode, options)
+function [v, eig_vals] = gen_v(grad, x, k, v, mode, options)
 % GEN_V Generate an orthonormal basis of some k-dimension subspace of x
-% v is span of the smallest or largest k eigenvectors of hess(x).
+% v is span of the smallest or largest k eigenvectors of hessian at x.
 % Input
 % ==============================
 % grad: function handle
@@ -8,36 +8,34 @@ function [v, eig_vals] = gen_v(grad, x, k, mode, options)
 % x: (n,1) double
 %    Input data.
 % k: integer
-%    Dimension of the unstable subspace, or the number of the smallest or largest eigenparis to compute.
-% mode: string
-%       Which eigenpairs to compute.
+%    Dimension of the subspace, or the number of the smallest or largest eigenparis to compute.
+% v: (n,k) double
+%    Previous approximation of eigenvectors.
+% mode: string, default="smallest"
+%       Which part of eigenpairs to compute, "smallestreal" or "largestreal";
 % options: struct
 %          options.stepsize: 1*2 double, default = [1e-3 1e-3]
-%                            stepsize in iterations of x and v respectively.
+%                            Stepsize in iterations of x and v respectively.
 %          options.l: double, default=1e-6
-%                     dimer length.
+%                     Dimer length.
 %          options.seed: integer, default=0
-%                        seed of random number generator.
+%                        Seed of random number generator.
 %          options.subspace_scheme: string, default="LOBPCG"
 %                                   Subspace v update scheme.
-%                                   "power" Power method of I - beta*Hess with beta = options.stepsize(2)
+%                                   "power" Power method of I -/+ beta*Hess with beta = options.stepsize(2)
 %                                   "LOBPSD" LOBPSD
 %                                   "LOBPCG" LOBPCG
-%                                   "rayleigh" Simultaneous Rayleigh-quotient minimization
+%                                   "rayleigh" Simultaneous Rayleigh-quotient minimization or maximization
 %          options.mgs_eps: double, default=1e-1
-%                           epsilon used in lobpsd and lobpcg.
+%                           Neglect threshold used in LOBPSD and LOBPCG.
 %          options.max_gen_iter: integer, default=1e2
-%                                max iterations allowd.
+%                                Max iterations allowd.
 %          options.r_tol: double, default=1e-3
-%                         tolerance for residuals.
+%                         Tolerance for error of eigenvector approximation.
 %          options.orth_scheme: string, default="mgs"
 %                               Orthonormalization scheme after each iteration.
 %                               "mgs" modified gram schmidt
 %                               "qr" qr decomposition
-%          options.step_scheme: string, default="euler"
-%                               Stepsize scheme in iterations of x and v.
-%                               "euler": Euler scheme with options.stepsize.
-%                               other schemes: TODO
 % Output
 % ==============================
 % v: (n,k) double
@@ -50,6 +48,11 @@ function [v, eig_vals] = gen_v(grad, x, k, mode, options)
 if ~exist('options','var')
     options = []; 
 end
+if ~isfield(options, 'max_gen_iter')
+    max_gen_iter = 1e2;
+else
+    max_gen_iter = options.max_gen_iter;
+end
 if ~isfield(options,'stepsize')
     stepsize = [1e-3 1e-3];  
 else
@@ -60,48 +63,39 @@ if ~isfield(options,'l')
 else 
     l = options.l;
 end
-if ~isfield(options,'seed')
-    seed = 0;
-else
-    seed = options.seed;
-end
-if ~isfield(options,'subspace_scheme')
-    subspace_scheme = "LOBPCG";
-else
-    subspace_scheme = options.subspace_scheme;
-end
 if ~isfield(options,'mgs_eps')
     mgs_eps = 1e-1;
 else
     mgs_eps = options.mgs_eps;
-end
-if ~isfield(options, 'max_gen_iter')
-    max_gen_iter = 1e2;
-else
-    max_gen_iter = options.max_gen_iter;
 end
 if ~isfield(options, 'r_tol')
     r_tol = 1e-3;
 else
     r_tol = options.r_tol;
 end
+if ~isfield(options,'seed')
+    seed = 0;
+else
+    seed = options.seed;
+end
 if ~isfield(options, 'orth_scheme')
     orth_scheme = "mgs";
 else
     orth_scheme = options.orth_scheme;
 end
-if ~isfield(options,'step_scheme')
-    step_scheme = "euler";
+if ~isfield(options,'subspace_scheme')
+    subspace_scheme = "LOBPCG";
 else
-    step_scheme = options.step_scheme;
+    subspace_scheme = options.subspace_scheme;
 end
 
 % preprations
-rng(seed);
 n = length(x);
-v = randn(n,k);
-vm1 = []; % for LOBPCG and simultaneous Rayleigh iteration
-eig_vals = [];
+vm1 = []; % for LOBPCG
+if isempty(v)
+    rng(seed);
+    v = randn(n,k);
+end
 
 % iterations
 for iter = 1:max_gen_iter
@@ -187,9 +181,7 @@ for iter = 1:max_gen_iter
             for j=1:i-1
                di = di + 2*dot(vm1(:,j), ui)*vm1(:,j); 
             end
-            if step_scheme == "euler"
-                v(:,i) = vi - sgn*stepsize(2)*di;
-            end
+            v(:,i) = vi - sgn*stepsize(2)*di;
         end
     end
 

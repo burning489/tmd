@@ -32,12 +32,11 @@ options.r_tol = 1e-2; % tol for residuals
 options.mgs_eps = 1e-1; % neglect tol for modified Gram-Schmidt
 options.norm_scheme = "Inf";
 options.orth_scheme = "mgs";
-options.step_scheme = "euler";
 options.subspace_scheme = "LOBPCG";
 % solver params
 options.max_iter = 2e6;
-options.v_iter = 3;
 options.g_tol = 1e-2; % tol for derivative
+options.step_scheme = "euler";
 options.output_fcn = @myoutput;
 options.plot_fcn = @plot_fval;
 options.display = "iter"; % print info at every iteration

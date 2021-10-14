@@ -13,8 +13,6 @@ function [x, fval, exitflag, output] = solver(grad, x0, k, v0, options, varargin
 % options: struct
 %          options.max_iter: integer, default = 1e3
 %                            Maximum number of iterations allowed, a positive integer.
-%          options.v_iter: integer, default = 5
-%                          Number of updates of v in each iteration.
 %          options.stepsize: 1*2 double, default = [1e-3 1e-3]
 %                            Stepsize in iterations of x and v respectively.
 %          options.g_tol: double, default = 1e-3
@@ -86,11 +84,6 @@ if ~isfield(options,'max_iter')
     max_iter = 1e3;
 else
     max_iter = options.max_iter;
-end
-if ~isfield(options,'v_iter')
-    v_iter = 5;
-else
-    v_iter = options.v_iter;
 end
 if ~isfield(options,'stepsize')
     stepsize = [1e-3 1e-3];
@@ -187,81 +180,75 @@ for n_iter = 1:max_iter
     
     % update v
     vnp1 = zeros(size(vn));
-    for v_iter_i = 1:v_iter
-        switch subspace_scheme
-            case "power" % power method on I - beta*Hess
-                for i=1:k
-                    vni = vn(:,i);
-                    % uni = (grad(xnp1+l*vni) - grad(xnp1-l*vni)) / (2*l), i.e. approximate Hess*vni
-                    uni = dimer(grad, xnp1, l, vni);
-                    if step_scheme == "euler"
-                        vnp1(:,i) = vni - stepsize(2)*uni;
-                    end
+    switch subspace_scheme
+        case "power" % power method on I - beta*Hess
+            for i=1:k
+                vni = vn(:,i);
+                % uni = (grad(xnp1+l*vni) - grad(xnp1-l*vni)) / (2*l), i.e. approximate Hess*vni
+                uni = dimer(grad, xnp1, l, vni);
+                vnp1(:,i) = vni - stepsize(2)*uni;
+            end
+        case "LOBPSD" % LOBPSD
+            % construct unstable subspace span(vn, T*(Hess*vni - <vni, Hess*vni>*vni)) for i = 1 to k
+            res = zeros(size(vn));
+            for i=1:k
+                vni = vn(:,i);
+                uni = dimer(grad, xnp1, l, vni);
+                res(:,i) = uni - dot(vni, uni)*vni;
+            end
+            u_sd = [vn, res];
+            u_sd = mgs2(u_sd, k, mgs_eps);
+            % test_orth(u_sd);
+            y_sd = zeros(size(u_sd));
+            k_ = size(u_sd, 2);
+            for i=1:k_
+                y_sd(:,i) = dimer(grad, xnp1, l, u_sd(:,i));
+            end
+            p_sd = u_sd'*y_sd;
+            p_sd = (p_sd + p_sd')/2;
+            [V, ~] = eigs(p_sd , k, 'smallestreal');
+            vnp1 = u_sd*V;
+        case "LOBPCG" % LOBPCG
+            % construct unstable subspace span(vn, vnm1, T*(Hess*vni - <vni, Hess*vni>*vni)) for i = 1 to k
+            res = zeros(size(vn));
+            for i=1:k
+                vni = vn(:,i);
+                uni = dimer(grad, xnp1, l, vni);
+                res(:,i) = uni - dot(vni, uni)*vni;
+            end
+            u_cg = [vn, vnm1, res];
+            u_cg = mgs2(u_cg, k, mgs_eps);
+            % test_orth(u_cg);
+            y_cg = zeros(size(u_cg));
+            k_ = size(u_cg, 2);
+            for i=1:k_
+                y_cg(:,i) = dimer(grad, xnp1, l, u_cg(:,i));
+            end
+            p_cg = u_cg'*y_cg;
+            p_cg = (p_cg + p_cg')/2;
+            [V, ~] = eigs(p_cg , k, 'smallestreal');
+            vnm1 = vn;
+            vnp1 = u_cg*V;
+        case "rayleigh" % simultaneous Rayleigh-quotient minimization
+            for i=1:k
+                vni = vn(:,i);
+                uni = dimer(grad, xnp1, l, vni);
+                dni = -uni + dot(vni, uni)*vni;
+                for j=1:i-1
+                    dni = dni + 2*dot(vn(:,j), uni)*vn(:,j);
                 end
-            case "LOBPSD" % LOBPSD
-                % construct unstable subspace span(vn, T*(Hess*vni - <vni, Hess*vni>*vni)) for i = 1 to k
-                res = zeros(size(vn));
-                for i=1:k
-                    vni = vn(:,i);
-                    uni = dimer(grad, xnp1, l, vni);
-                    res(:,i) = uni - dot(vni, uni)*vni;
-                end
-                u_sd = [vn, res];
-                u_sd = mgs2(u_sd, k, mgs_eps);
-                % test_orth(u_sd);
-                y_sd = zeros(size(u_sd));
-                k_ = size(u_sd, 2);
-                for i=1:k_
-                    y_sd(:,i) = dimer(grad, xnp1, l, u_sd(:,i));
-                end
-                p_sd = u_sd'*y_sd;
-                p_sd = (p_sd + p_sd')/2;
-                [V, ~] = eigs(p_sd , k, 'smallestreal');
-                vnp1 = u_sd*V;
-            case "LOBPCG" % LOBPCG
-                % construct unstable subspace span(vn, vnm1, T*(Hess*vni - <vni, Hess*vni>*vni)) for i = 1 to k
-                res = zeros(size(vn));
-                for i=1:k
-                    vni = vn(:,i);
-                    uni = dimer(grad, xnp1, l, vni);
-                    res(:,i) = uni - dot(vni, uni)*vni;
-                end
-                u_cg = [vn, vnm1, res];
-                u_cg = mgs2(u_cg, k, mgs_eps);
-                % test_orth(u_cg);
-                y_cg = zeros(size(u_cg));
-                k_ = size(u_cg, 2);
-                for i=1:k_
-                    y_cg(:,i) = dimer(grad, xnp1, l, u_cg(:,i));
-                end
-                p_cg = u_cg'*y_cg;
-                p_cg = (p_cg + p_cg')/2;
-                [V, ~] = eigs(p_cg , k, 'smallestreal');
-                vnm1 = vn;
-                vnp1 = u_cg*V;
-            case "rayleigh" % simultaneous Rayleigh-quotient minimization
-                for i=1:k
-                    vni = vn(:,i);
-                    uni = dimer(grad, xnp1, l, vni);
-                    dni = -uni + dot(vni, uni)*vni;
-                    for j=1:i-1
-                        dni = dni + 2*dot(vn(:,j), uni)*vn(:,j);
-                    end
-                    if step_scheme == "euler"
-                        vnp1(:,i) = vni + stepsize(2)*dni;
-                    end
-                end
-            otherwise
-                errID = "SOLVER:UnknownSubspaceScheme";
-                msgtext = "solver receive invalid subspace_scheme";
-                ME = MException(errID,msgtext);
-                throw(ME);
-        end
-        
-        % orthnormalize
-        vnp1 = myorth(vnp1, orth_scheme);
-        vn = vnp1;
+                vnp1(:,i) = vni + stepsize(2)*dni;
+            end
+        otherwise
+            errID = "SOLVER:UnknownSubspaceScheme";
+            msgtext = "solver receive invalid subspace_scheme";
+            ME = MException(errID,msgtext);
+            throw(ME);
     end
+    
+    % orthnormalize
+    vnp1 = myorth(vnp1, orth_scheme);
+    vn = vnp1;
     
     xn = xnp1;
     fn = -grad(xn);
