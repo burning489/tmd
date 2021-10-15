@@ -22,7 +22,7 @@ for i=k+1:size(x,2)
     end
 end
 
-disp(ind)
+% disp(ind)
 q = q(:, ind);
 
 end

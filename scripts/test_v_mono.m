@@ -1,5 +1,5 @@
 clean;
-load('results/result_000_2.mat');
+load('results/result_006.mat');
 t = linspace(-10, 10, 1000);
 f = zeros(size(t));
 fx = energy(x);
