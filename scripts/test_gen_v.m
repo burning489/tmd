@@ -11,7 +11,7 @@ options.seed = 1;
 options.r_tol = 1e-2;
 options.orth_scheme = "mgs";
 options.step_scheme = "euler"; 
-options.subspace_scheme = "power"; 
+options.subspace_scheme = "LOBPCG"; 
 options.mgs_eps = 1e-3; % neglect tol for modified Gram-Schmidt
 
 x = load("results/result_006.mat").x;

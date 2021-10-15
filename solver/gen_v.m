@@ -149,7 +149,7 @@ for iter = 1:max_gen_iter
             res = zeros(size(v));
             for i=1:k
                 vi = v(:,i);
-                res(:,i) = ui - dot(vi, hv(:,i))*vi;
+                res(:,i) = hv(:,i) - dot(vi, hv(:,i))*vi;
             end
             % u <- span(v, res)
             u_sd = [v, res];
@@ -173,7 +173,7 @@ for iter = 1:max_gen_iter
             res = zeros(size(v));
             for i=1:k
                 vi = v(:,i);
-                res(:,i) = ui - dot(vi, hv(:,i))*vi;
+                res(:,i) = hv(:,i) - dot(vi, hv(:,i))*vi;
             end
             % u <- span(v, vm1, res)
             u_cg = [v, vm1, res];
