@@ -194,6 +194,7 @@ for n_iter = 1:max_iter
         case "bb"
             if n_iter == 1
                 step_x = stepsize(1);
+                choice = 0;
             else
                 [step_x, choice] = min([tau/mynorm(gn, norm_scheme), abs(dot(dx,dg)/dot(dg,dg))]);
             end
