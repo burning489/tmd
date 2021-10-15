@@ -1,4 +1,4 @@
-function [v, eig_vals] = gen_v(grad, x, k, v, mode, options)
+function [v, eig_vals] = gen_v(grad, x, k, v, vm1, mode, options)
 % GEN_V Generate an orthonormal basis of some k-dimension subspace of x
 % v is span of the smallest or largest k eigenvectors of hessian at x.
 % Input
@@ -10,7 +10,9 @@ function [v, eig_vals] = gen_v(grad, x, k, v, mode, options)
 % k: integer
 %    Dimension of the subspace, or the number of the smallest or largest eigenparis to compute.
 % v: (n,k) double
-%    Previous approximation of eigenvectors.
+%    Current approximation of eigenvectors.
+% vm1: (n,k) double
+%      Previous approximation of eigenvectors, for LOBPCG
 % mode: string, default="smallest"
 %       Which part of eigenpairs to compute, "smallestreal" or "largestreal";
 % options: struct
@@ -91,7 +93,6 @@ end
 
 % preprations
 n = length(x);
-vm1 = []; % for LOBPCG
 if isempty(v)
     rng(seed);
     v = randn(n,k);
@@ -216,16 +217,15 @@ for iter = 1:max_gen_iter
     residuals = hv - v*D;
     norm_res = norm(residuals, 'fro');
     norm_hv = norm(hv, 'fro');
-    nbytes = fprintf(['#iter=%d\n', 'eig_val:', repmat('%f  ', 1, k), '\n', 'relative_err=%f\n'], iter, diag(D), norm_res/norm_hv);
+    nbytes = fprintf(['#v_iter=%d\n', 'eig_val:', repmat('%f  ', 1, k), '\n', 'relative_err=%f\n'], iter, diag(D), norm_res/norm_hv);
     if norm_res < r_tol*norm_hv
-        if exist('D', 'var')
-            eig_vals = diag(D);
-        end
+        fprintf(repmat('\b', 1, nbytes));
+        eig_vals = diag(D);
         return;
     end
 end
-if exist('D', 'var')
-    eig_vals = diag(D);
-end
-warning("GEN_V does not converge\n");
+
+fprintf(repmat('\b', 1, nbytes));
+eig_vals = diag(D);
+
 end

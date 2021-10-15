@@ -50,7 +50,7 @@ else
     title(sprintf("function values during %d iterations", opt_values.n_iter));
     drawnow
 end
-if mod(opt_values.n_iter, 1000) == 0
+if mod(opt_values.n_iter, 1) == 0
     saveas(1, sprintf(root_path+"/results/r%s/energy.png", timestamp));
 end
 end

@@ -2,7 +2,7 @@ function stop = myoutput(x, optimValues, state)
 global N root_path timestamp;
 n = N*N;
 stop = false;
-if state == "init" || state == "done" || mod(optimValues.n_iter, 1e2) == 0
+if state == "init" || state == "done" || mod(optimValues.n_iter, 1) == 0
     % plots
     set(0, 'CurrentFigure', 2);
     subplot(1,3,1);
@@ -19,7 +19,6 @@ if state == "init" || state == "done" || mod(optimValues.n_iter, 1e2) == 0
     colorbar;
     axis square;
     saveas(2, sprintf(root_path+"/results/r%s/plots/phase_%d.png", timestamp, optimValues.n_iter));
-    saveas(2, sprintf(root_path+"/results/r%s/phase_%d.png", timestamp, optimValues.n_iter));
     % chcekpoints
     x = optimValues.x;
     v = optimValues.v;
