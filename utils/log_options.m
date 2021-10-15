@@ -17,6 +17,7 @@ fprintf(fileID, "\n\t],\n");
 fprintf(fileID, "\t""max_gen_iter"": %d,\n", options.max_gen_iter);
 fprintf(fileID, "\t""stepsize"": [%f, %f],\n", options.stepsize);
 fprintf(fileID, "\t""l"": %f,\n", options.l);
+fprintf(fileID, "\t""tau"": %f,\n", options.tau);
 fprintf(fileID, "\t""rng_seed"": %d,\n", options.seed);
 fprintf(fileID, "\t""r_tol"": %f,\n", options.r_tol);
 fprintf(fileID, "\t""mgs_eps"": %f,\n", options.mgs_eps);

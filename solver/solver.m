@@ -19,8 +19,10 @@ function [x, fval, exitflag, output] = solver(grad, x0, k, v0, options, varargin
 %                         Termination tolerance on derivative, a positive scalar. Solver stops when it satisfies g_tol.
 %          options.mgs_eps: double, default=1e-1
 %                           Epsilon used in LOBPSD and LOBPCG.
-%          options.l: double, default = 1e-9
+%          options.l: double, default = 1e-6
 %                     Dimer length. Should be shrunk but neglected here.
+%          options.tau: double, default = 1e-2
+%                       Lower bound for BB stepsize.
 %          options.norm_scheme: string, default="Inf"
 %                               Which norm to use.
 %                               "Inf": infinity norm
@@ -29,6 +31,7 @@ function [x, fval, exitflag, output] = solver(grad, x0, k, v0, options, varargin
 %          options.step_scheme: string, default="euler"
 %                               Stepsize scheme in iterations of x and v.
 %                               "euler" Euler scheme with options.stepsize
+%                               "bb" bb step scheme
 %          options.orth_scheme: string, default="mgs"
 %                               Orthogonalization scheme.
 %                               "mgs" modified Gram Schmidt
@@ -105,6 +108,11 @@ if ~isfield(options,'l')
 else
     l = options.l;
 end
+if ~isfield(options,'tau')
+    tau = 1e-2;
+else
+    tau = options.tau;
+end
 if ~isfield(options,'norm_scheme')
     norm_scheme = "Inf";
 else
@@ -169,13 +177,17 @@ for n_iter = 1:max_iter
     
     % update x
     % gn = fn - 2*sum_{i=1}^{k}(<vni, fn>*vni), with vni = vn(:,i) and fn = -grad(xn).
-    gnm1 = gn;
+    if n_iter ~= 1
+        gnm1 = gn;
+    end
     gn = fn;
-    for i = 1:k;
+    for i = 1:k
         vni = vn(:,i);
         gn = gn - 2*dot(vni,fn)*vni;
     end
-    dg = gn - gnm1
+    if n_iter ~= 1
+        dg = gn - gnm1;
+    end
     switch step_scheme
         case "euler"
             step_x = stepsize(1);

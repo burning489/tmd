@@ -35,8 +35,9 @@ options.orth_scheme = "mgs";
 options.subspace_scheme = "LOBPCG";
 % solver params
 options.max_iter = 2e6;
+options.tau = 1e-2;
 options.g_tol = 1e-2; % tol for derivative
-options.step_scheme = "euler";
+options.step_scheme = "bb";
 options.output_fcn = @myoutput;
 options.plot_fcn = @plot_fval;
 options.display = "iter"; % print info at every iteration
