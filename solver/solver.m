@@ -195,8 +195,12 @@ for n_iter = 1:max_iter
             if n_iter == 1
                 step_x = stepsize(1);
             else
-                step_x = min(tau/mynorm(gn, norm_scheme), abs(dot(dx,dg)/dot(dg,dg)));
+                [step_x, choice] = min([tau/mynorm(gn, norm_scheme), abs(dot(dx,dg)/dot(dg,dg))]);
             end
+            if n_iter ~=1
+                fprintf(repmat('\b', 1, nbytesbb))
+            end;
+            nbytesbb = fprintf('stepsize=%f\n', step_x);
         otherwise
             errID = "SOLVER:UnknownStepScheme";
             msgtext = "solver receive invalid step_scheme";
