@@ -24,7 +24,7 @@ options.k = k; % index of target
 options.perturb_eps = 1e0;
 options.perturb_index = 1:k;
 % gen_v params
-options.max_gen_iter = 1e5;
+options.max_gen_iter = 1e3;
 options.stepsize = [1e-2 1e-2];
 options.l = 1e-6;
 options.seed = 1;
@@ -32,7 +32,7 @@ options.r_tol = 1e-1; % tol for approxiation of eigenvectors
 options.mgs_eps = 1e-1; % neglect tol for modified Gram-Schmidt
 options.norm_scheme = "Inf";
 options.orth_scheme = "mgs";
-options.subspace_scheme = "LOBPCG";
+options.subspace_scheme = "rayleigh";
 % solver params
 options.max_iter = 2e6;
 options.tau = 1e-2;
