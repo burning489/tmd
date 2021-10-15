@@ -169,14 +169,30 @@ for n_iter = 1:max_iter
     
     % update x
     % gn = fn - 2*sum_{i=1}^{k}(<vni, fn>*vni), with vni = vn(:,i) and fn = -grad(xn).
+    gnm1 = gn;
     gn = fn;
-    for i = 1:k
+    for i = 1:k;
         vni = vn(:,i);
         gn = gn - 2*dot(vni,fn)*vni;
     end
-    if step_scheme == "euler"
-        xnp1 = xn + stepsize(1)*gn;
+    dg = gn - gnm1
+    switch step_scheme
+        case "euler"
+            step_x = stepsize(1);
+        case "bb"
+            if n_iter == 1
+                step_x = stepsize(1);
+            else
+                step_x = min(tau/mynorm(gn, norm_scheme), abs(dot(dx,dg)/dot(dg,dg)));
+            end
+        otherwise
+            errID = "SOLVER:UnknownStepScheme";
+            msgtext = "solver receive invalid step_scheme";
+            ME = MException(errID,msgtext);
+            throw(ME);
     end
+    xnp1 = xn + step_x*gn;
+    dx = xnp1 - xn;
     
     % update x
     vnp1 = gen_v(grad, xnp1, k, vn, vnm1, 'smallestreal', options);
