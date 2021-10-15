@@ -203,16 +203,6 @@ for n_iter = 1:max_iter
     fn = -grad(xn);
     en = energy(xn);
     
-    % check if energy exceeds upper bound
-    if en > 1e4
-        output.message = sprintf("Function value exceeds 1e4.\n");
-        exitflag = 0;
-        if display == "notify"
-            fprintf("Solver does not converge. " + output.message);
-        end
-        break;
-    end
-    
     % plot energy functions
     if ~isempty(plot_fcn)
         opt_values.n_iter = n_iter;

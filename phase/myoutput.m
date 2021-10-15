@@ -2,6 +2,10 @@ function stop = myoutput(x, optimValues, state)
 global N root_path timestamp;
 n = N*N;
 stop = false;
+if optimValues.fval > 1e4
+    fprintf("Function value exceeds 1e4.\n");
+    stop = true;
+end
 if state == "init" || state == "done" || mod(optimValues.n_iter, 1) == 0
     % plots
     set(0, 'CurrentFigure', 2);
