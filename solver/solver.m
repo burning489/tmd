@@ -200,7 +200,7 @@ for n_iter = 1:max_iter
             if n_iter ~=1
                 fprintf(repmat('\b', 1, nbytesbb))
             end;
-            nbytesbb = fprintf('stepsize=%f\n', step_x);
+            nbytesbb = fprintf('stepsize=%f\n, choice=%d', step_x, choice);
         otherwise
             errID = "SOLVER:UnknownStepScheme";
             msgtext = "solver receive invalid step_scheme";
