@@ -23,6 +23,7 @@ if state == "init" || state == "done" || mod(optimValues.n_iter, 1) == 0
     colorbar;
     axis square;
     saveas(2, sprintf(root_path+"/results/r%s/plots/phase_%d.png", timestamp, optimValues.n_iter));
+    saveas(2, sprintf(root_path+"/results/r%s/phase_n.png", timestamp));
     % chcekpoints
     x = optimValues.x;
     v = optimValues.v;
