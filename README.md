@@ -1,6 +1,6 @@
 ## Energy landscape construct
 
-This repository contains MATLAB code implementing High-Index based Dimer method (by Zhang Lei) of constructing a pathway map of saddle points on an energy surface(TMD structure).
+This repository contains MATLAB code implementing saddle dynamics of constructing a pathway map of saddle points on an energy surface(TMD structure).
 
 ## Code Structure
 
