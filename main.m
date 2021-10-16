@@ -40,7 +40,6 @@ options.g_tol = 1e-2; % tol for derivative
 options.step_scheme = "bb";
 options.output_fcn = @myoutput;
 options.plot_fcn = @plot_fval;
-options.display = "iter"; % print info at every iteration
 % save and log configurations
 log_options(options);
 

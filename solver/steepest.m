@@ -28,11 +28,6 @@ if ~isfield(options,'g_tol')
 else
     g_tol = options.g_tol;
 end
-if ~isfield(options,'display')
-    display = "notify";
-else
-    display = options.display;
-end
 if ~isfield(options,'plot_fcn')
     plot_fcn = [];
 else

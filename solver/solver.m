@@ -42,12 +42,6 @@ function [x, fval, exitflag, output] = solver(grad, x0, k, v0, options, varargin
 %                                   "LOBPSD" LOBPSD
 %                                   "LOBPCG" LOBPCG
 %                                   "rayleigh" Simultaneous Rayleigh-quotient minimization
-%          options.display: string, default = "notify"
-%                           Stategy of information display.
-%                           "notify" displays output only if the function does not converge.
-%                           "final" displays just the final output.
-%                           "off" or "none" displays no output.
-%                           "iter" displays output at each iteration.
 %          options.plot_fcn: function handle, default=[]
 %                            Plot of progress while the algorithm executes. Pass a user defined function handle.
 %          options.output_fcn: function handle, default=[]
@@ -142,11 +136,6 @@ if ~isfield(options,'output_fcn')
     output_fcn = [];
 else
     output_fcn = options.output_fcn;
-end
-if ~isfield(options,'display')
-    display = "notify";
-else
-    display = options.display;
 end
 
 global energy_fcn
@@ -243,21 +232,7 @@ for n_iter = 1:max_iter
         stop = output_fcn(xn, opt_values, state);
         if stop
             exitflag = -1;
-            if display == "notify"
-                output.message = "Solver stopped by output function.\n";
-                fprintf(output.message);
-            end
             break;
-        end
-    end
-    if n_iter ~= 1
-        fprintf(repmat('\b', 1, nbytes));
-    end
-    if display == "iter"
-        if exist("k_", "var")
-            nbytes = fprintf("#iter=%d\tfval=%e\tgnrm=%e\t#dim_u=%d\n", n_iter, en, mynorm(fn, norm_scheme), k_);
-        else
-            nbytes = fprintf("#iter=%d\tfval=%e\tgnrm=%e\n", n_iter, en, mynorm(fn, norm_scheme));
         end
     end
 end
@@ -268,15 +243,8 @@ fval = energy(x);
 if n_iter == max_iter
     exitflag = 0;
     output.message = sprintf("Reach Max Iterations.\n");
-    if display == "notify"
-        fprintf("Solver does not converge. " + output.message);
-    end
 end
 output.iterations = n_iter;
 output.v = vn;
-
-if display == "final"
-    fprintf("#iter=%d\tfval=%e\t gnrm=%e\n", n_iter, fval, mynorm(grad(x), norm_scheme));
-end
 
 end
