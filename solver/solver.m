@@ -152,6 +152,7 @@ exitflag = 1;
 if ~isempty(plot_fcn)
     opt_values.n_iter = n_iter;
     opt_values.fval = en;
+    opt_values.gnrm = mynorm(fn, norm_scheme);
     plot_fcn(en, opt_values);
 end
 
@@ -220,6 +221,7 @@ for n_iter = 1:max_iter
     if ~isempty(output_fcn)
         opt_values.n_iter = n_iter;
         opt_values.fval = en;
+        opt_values.gnrm = mynorm(fn, norm_scheme);
         opt_values.x = xn;
         opt_values.v = vn;
         if n_iter == 1

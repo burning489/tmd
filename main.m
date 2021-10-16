@@ -24,7 +24,7 @@ options.k = k; % index of target
 options.perturb_eps = 1e0;
 options.perturb_index = 1:k;
 % gen_v params
-options.max_gen_iter = 1e3;
+options.max_gen_iter = 1e1;
 options.stepsize = [1e-2 1e-2];
 options.l = 1e-6;
 options.seed = 1;
@@ -53,7 +53,7 @@ else
 end
 
 x0 = load("results/result_000.mat").x;
-v0 = load("results/result_000.mat").v;
+v0 = load("results/result_000.mat").v_s;
 
 save(sprintf(root_path+"/results/r%s/log.mat", timestamp), 'x0', 'v0', 'options');
 

@@ -17,6 +17,7 @@ function plot_fval(f_vals, opt_values)
 global root_path timestamp e_bulk e_inter e_elas
 if opt_values.n_iter == 0
     set(0, 'CurrentFigure', 1);
+    nexttile;
     plotfval = plot(0, f_vals, 0, e_bulk, 0, e_inter, 0, e_elas);
     legend({'total','bulk','interface','elas'}, "Location", "northwest");
     set(plotfval(1), 'Tag', 'fval');
@@ -24,9 +25,15 @@ if opt_values.n_iter == 0
     set(plotfval(3), 'Tag', 'e_inter');
     set(plotfval(4), 'Tag', 'e_elas');
     title(sprintf("function values during %d iterations", opt_values.n_iter));
+    nexttile;
+    plotgnrm = plot(0, opt_values.gnrm);
+    set(plotgnrm(1), 'Tag', 'gnrm');
+    title(sprintf("norm of derivative during %d iterations", opt_values.n_iter));
     drawnow
 else
     set(0, 'CurrentFigure', 1);
+
+    nexttile(1);
     plotfval = findobj(get(gcf,'Children'), 'Tag', 'fval');
     f_vals = [plotfval.YData, f_vals];
     set(plotfval, 'YData', f_vals);
@@ -49,6 +56,13 @@ else
     
     title(sprintf("function values during %d iterations", opt_values.n_iter));
     drawnow
+
+    nexttile(2);
+    plotgnrm = findobj(get(gcf,'Children'), 'Tag', 'gnrm');
+    gnrm = [plotgnrm.YData, opt_values.gnrm];
+    set(plotgnrm, 'YData', gnrm);
+    set(plotgnrm, 'XData', 0:opt_values.n_iter);
+    title(sprintf("norm of derivative during %d iterations", opt_values.n_iter));
 end
 if mod(opt_values.n_iter, 1) == 0
     saveas(1, sprintf(root_path+"/results/r%s/energy.png", timestamp));
