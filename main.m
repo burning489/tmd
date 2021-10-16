@@ -25,21 +25,26 @@ options.max_gen_iter = 1e3;
 options.stepsize = [1e-2 1e-2];
 options.l = 1e-6;
 options.seed = 1;
-options.r_tol = 1e-1; % tol for approxiation of eigenvectors
+options.r_tol = 1e-2; % tol for approxiation of eigenvectors
 options.mgs_eps = 1e-1; % neglect tol for modified Gram-Schmidt
 options.norm_scheme = "Inf";
 options.orth_scheme = "mgs";
 options.subspace_scheme = "rayleigh";
 % solver params
 options.max_iter = 2e6;
-options.tau = 1e-2;
+options.tau = 0.5;
 options.g_tol = 1e-2; % tol for derivative
 options.step_scheme = "bb";
 options.output_fcn = @myoutput;
 options.plot_fcn = @plot_fval;
-% save and log configurations
-log_options(options);
 
+x0 = load("results/result_000.mat").x;
+v0 = load("results/result_000.mat").v_s;
+
+% plot start point
+plot_phase(x0);
+saveas(1, sprintf(root_path+"/results/r%s/phase_0.png", timestamp));
+close(1);
 % show figures on pc and not on server
 if ismac || ispc
     figure();
@@ -49,21 +54,11 @@ else
     figure("Visible", "off");
 end
 
-x0 = load("results/result_000.mat").x;
-v0 = load("results/result_000.mat").v_s;
-
+% save configurations
+log_options(options);
 save(sprintf(root_path+"/results/r%s/log.mat", timestamp), 'x0', 'v0', 'options');
 
-% plot_phase(x0);
-% saveas(3, sprintf(root_path+"/results/r%s/phase_0.png", timestamp));
-% close(3);
-
 % perturb
-for i=1:5
-    x0 = x0 + options.perturb_eps*v0(:,i);
-end
-v0 = v0(:,1:k);
-
 for i=1:length(options.perturb_index)
     x0 = x0 + options.perturb_eps*v0(:,options.perturb_index(i));
 end

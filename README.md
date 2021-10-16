@@ -72,6 +72,7 @@ following without elastic part
 - [x] understand LOBPSD/LOBPCG: notice current and previous approximation might be linear dependent.
 - [ ] redirect fprintf to file
 - [x] log information about derivative
+- [ ] comparision experiments on subspace scheme, step scheme and norm scheme(and maybe r_tol)
 
 ## Bugs
 - [x] LOBPSD and LOBPCG in solver use wrong parameter for eigs, should replace SM with smllestreal
