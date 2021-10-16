@@ -14,9 +14,6 @@ end
 mkdir(sprintf(pwd+"/results/r%s/plots", timestamp));
 mkdir(sprintf(pwd+"/results/r%s/checkpoints", timestamp));
 
-% logging
-diary(run_folder+"/log.txt");
-
 % params
 k = 4;
 options.k0 = 0; % index of start point
@@ -24,7 +21,7 @@ options.k = k; % index of target
 options.perturb_eps = 1e0;
 options.perturb_index = 1:k;
 % gen_v params
-options.max_gen_iter = 1e1;
+options.max_gen_iter = 1e3;
 options.stepsize = [1e-2 1e-2];
 options.l = 1e-6;
 options.seed = 1;
@@ -79,5 +76,3 @@ v = output.v;
 save(sprintf(root_path+"/results/r%s/log.mat", timestamp), 'x', 'v', '-append');
 savefig(1, sprintf(root_path+"/results/r%s/energy.fig", timestamp));
 output.message
-
-diary off;

@@ -71,7 +71,7 @@ following without elastic part
 - [x] decouple gen_v from solver
 - [x] understand LOBPSD/LOBPCG: notice current and previous approximation might be linear dependent.
 - [ ] redirect fprintf to file
-- [ ] log information about derivative
+- [x] log information about derivative
 
 ## Bugs
 - [x] LOBPSD and LOBPCG in solver use wrong parameter for eigs, should replace SM with smllestreal
