@@ -6,7 +6,7 @@ setup;
 
 % output folder
 global timestamp;
-timestamp = datestr(now,'yymmdd-HHMMSSFFF'); % e.g. 211012-102728 for 12th, October, 2021, 10:27:38
+timestamp = datestr(now,'yymmdd-HHMMSS'); % e.g. 211012-102728 for 12th, October, 2021, 10:27:38
 run_folder = sprintf(pwd+"/results/r%s", timestamp);
 if exist(run_folder, "dir")
     system("rm -rf "+run_folder);

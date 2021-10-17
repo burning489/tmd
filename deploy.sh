@@ -11,6 +11,7 @@ for var1i in "${var1[@]}"; do
             # params="options.subspace_scheme=\"$var1i\";options.step_scheme=\"$var2i\";options.norm_scheme=\"$var3i\";options.r_tol=$var4i;"
             params="options.subspace_scheme=\"$var1i\";options.step_scheme=\"$var2i\";options.norm_scheme=\"$var3i\";"
             sbatch task.sbatch $params
+            sleep 2
             # done
         done
     done
