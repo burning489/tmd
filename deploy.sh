@@ -1,7 +1,7 @@
 #!/bin/bash
 var1=(power rayleigh LOBPCG)
 var2=(euler bb)
-var3=(1 2 Inf)
+var3=(1 Inf)
 # var4=(1e-2 1e-1)
 
 for var1i in "${var1[@]}"; do

@@ -6,7 +6,7 @@ setup;
 
 % output folder
 global timestamp;
-timestamp = datestr(now,'yymmdd-HHMMSS'); % e.g. 211012-102728 for 12th, October, 2021, 10:27:38
+timestamp = datestr(now,'yymmdd-HHMMSSFFF'); % e.g. 211012-102728 for 12th, October, 2021, 10:27:38
 run_folder = sprintf(pwd+"/results/r%s", timestamp);
 if exist(run_folder, "dir")
     system("rm -rf "+run_folder);
@@ -15,14 +15,14 @@ mkdir(sprintf(pwd+"/results/r%s/plots", timestamp));
 mkdir(sprintf(pwd+"/results/r%s/checkpoints", timestamp));
 
 % params
-k = 4;
+k = 1;
 options.k0 = 0; % index of start point
 options.k = k; % index of target
 options.perturb_eps = 1e0;
 options.perturb_index = 1:k;
 % gen_v params
 options.max_gen_iter = 1e3;
-options.stepsize = [1e-2 1e-2];
+options.stepsize = [1e-3 1e-3];
 options.l = 1e-6;
 options.seed = 1;
 options.r_tol = 1e-2; % tol for approxiation of eigenvectors
@@ -59,8 +59,11 @@ log_options(options);
 save(sprintf(root_path+"/results/r%s/log.mat", timestamp), 'x0', 'v0', 'options');
 
 % perturb
-for i=1:length(options.perturb_index)
-    x0 = x0 + options.perturb_eps*v0(:,options.perturb_index(i));
+% for i=1:length(options.perturb_index)
+%     x0 = x0 + options.perturb_eps*v0(:,options.perturb_index(i));
+% end
+for i=5:10
+    x0 = x0 + options.perturb_eps*v0(:,i);
 end
 
 % solver
