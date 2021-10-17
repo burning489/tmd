@@ -15,5 +15,4 @@ cd $SLURM_SUBMIT_DIR
 module load matlab/R2020a
 
 echo $1
-time=$(date +"%y%m%d-%H%M%S")
-sed "/log_options(/i $1" main.m | sed "/datestr/c timestamp='$time';" | matlab -nosplash -nodisplay -nodesktop
+sed "/log_options(/i $1" main.m | sed "/datestr/c timestamp=\"$2\";" | matlab -nosplash -nodisplay -nodesktop
