@@ -12,7 +12,7 @@ for var1i in "${var1[@]}"; do
             params="options.subspace_scheme=\"$var1i\";options.step_scheme=\"$var2i\";options.norm_scheme=\"$var3i\";"
             time=$(date +"%y%m%d-%H%M%S")
             sbatch task.sbatch $params $time
-            sleep 2
+            sleep 1.01
             # done
         done
     done

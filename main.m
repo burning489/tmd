@@ -13,16 +13,17 @@ if exist(run_folder, "dir")
 end
 mkdir(sprintf(pwd+"/results/r%s/plots", timestamp));
 mkdir(sprintf(pwd+"/results/r%s/checkpoints", timestamp));
+diary(run_folder+"/log.txt");
 
 % params
-k = 1;
+k = 2;
 options.k0 = 0; % index of start point
 options.k = k; % index of target
 options.perturb_eps = 1e0;
 options.perturb_index = 1:k;
 % gen_v params
 options.max_gen_iter = 1e3;
-options.stepsize = [1e-3 1e-3];
+options.stepsize = [1e-2 1e-2];
 options.l = 1e-6;
 options.seed = 1;
 options.r_tol = 1e-2; % tol for approxiation of eigenvectors
@@ -58,13 +59,13 @@ end
 log_options(options);
 save(sprintf(root_path+"/results/r%s/log.mat", timestamp), 'x0', 'v0', 'options');
 
+v_l = load("results/result_000.mat").v_l;
 % perturb
-% for i=1:length(options.perturb_index)
-%     x0 = x0 + options.perturb_eps*v0(:,options.perturb_index(i));
-% end
-for i=5:10
-    x0 = x0 + options.perturb_eps*v0(:,i);
+for i=5:10;
+    x0 = x0 + options.perturb_eps*v_l(:,i);
 end
+
+diary off
 
 % solver
 [x, fval, exitflag, output] = solver(der_fcn, x0, k, v0, options);
@@ -73,4 +74,5 @@ end
 v = output.v;
 save(sprintf(root_path+"/results/r%s/log.mat", timestamp), 'x', 'v', '-append');
 savefig(1, sprintf(root_path+"/results/r%s/energy.fig", timestamp));
+system("mv "+run_folder+" "+run_folder+"_done");
 output.message

@@ -32,14 +32,8 @@ This repository contains MATLAB code implementing saddle dynamics of constructin
 
 ## Results
 
-following with elastic part
-- result001 single circle in one phase
-- result002 double circles in one phase
-- result003 a thin stick in one phase, index=0 with a degenerate eigenpair, got from upward search from all zero with k=1
-- result004 a thin wave in one phase, got from downward search from result001 with k=1, with another small negative eigenvalue -0.05, taken as zero
-following without elastic part
-- result005 single circle in one phase
-- result006 refined result005, index=1, with 2 degenerate eigenpairs, got from upward search from all zero with k=1
+- result000 allzero phase, rigorous index-0 saddle
+- result001 single circle in one phase, degenerated index-0 saddle, r211017_135200
 
 ## Remarks
 

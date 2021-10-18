@@ -1,6 +1,6 @@
 clean;
-load('results/result_000.mat');
-t = linspace(-10, 10, 1000);
+load('log.mat');
+t = linspace(-20, 20, 1000);
 f = zeros(size(t));
 fx = energy(x);
 for i=1:size(v_s, 2)
@@ -23,3 +23,4 @@ for i=1:size(v_l, 2)
     ylabel('f(x)-f(x+lv)');
     title(sprintf("v%d", i));
 end
+savefig(gcf, "log.fig");
