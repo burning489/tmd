@@ -16,11 +16,10 @@ mkdir(sprintf(pwd+"/results/r%s/checkpoints", timestamp));
 diary(run_folder+"/log.txt");
 
 % params
-k = 2;
+k = 1;
 options.k0 = 0; % index of start point
 options.k = k; % index of target
 options.perturb_eps = 1e0;
-options.perturb_index = 1:k;
 % gen_v params
 options.max_gen_iter = 1e3;
 options.stepsize = [1e-2 1e-2];
@@ -30,12 +29,12 @@ options.r_tol = 1e-2; % tol for approxiation of eigenvectors
 options.mgs_eps = 1e-1; % neglect tol for modified Gram-Schmidt
 options.norm_scheme = "Inf";
 options.orth_scheme = "mgs";
-options.subspace_scheme = "rayleigh";
+options.subspace_scheme = "LOBPCG";
 % solver params
 options.max_iter = 2e6;
 options.tau = 0.5;
 options.g_tol = 1e-2; % tol for derivative
-options.step_scheme = "bb";
+options.step_scheme = "euler";
 options.output_fcn = @myoutput;
 options.plot_fcn = @plot_fval;
 
@@ -59,10 +58,9 @@ end
 log_options(options);
 save(sprintf(root_path+"/results/r%s/log.mat", timestamp), 'x0', 'v0', 'options');
 
-v_l = load("results/result_000.mat").v_l;
 % perturb
-for i=5:10;
-    x0 = x0 + options.perturb_eps*v_l(:,i);
+for i=1:15;
+    x0 = x0 + options.perturb_eps*v_s(:,i);
 end
 
 diary off

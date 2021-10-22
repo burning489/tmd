@@ -33,7 +33,8 @@ This repository contains MATLAB code implementing saddle dynamics of constructin
 ## Results
 
 - result000 allzero phase, rigorous index-0 saddle
-- result001 single circle in one phase, degenerated index-0 saddle, r211017_135200
+- result001 single circle in one phase, degenerated index-0 saddle, r211017-135200, r211018-111816
+- result002 single circle in one phase, degenerated index-0 saddle, r211018-111815
 
 ## Remarks
 
