@@ -1,4 +1,4 @@
-function [e_bulk, f_bulk ]= bulk(x)
+function [e_bulk, f_bulk]= bulk(x)
 % BULK Compute bulk energy of phase x.
 % x: (n,1) double
 %    Input phase.
